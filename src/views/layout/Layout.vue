@@ -9,7 +9,7 @@
   <i-ep-search />
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup name="Layout">
 const test = ref(123)
 </script>
 
