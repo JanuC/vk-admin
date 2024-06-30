@@ -17,4 +17,4 @@ router.afterEach(() => {
   closeProgress()
 })
 
-export default router
+export default router as any
