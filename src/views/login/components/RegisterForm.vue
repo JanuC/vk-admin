@@ -66,8 +66,9 @@
 
 <script lang="ts" setup name="registerForm">
 import { FormRules, FormInstance, ElNotification } from 'element-plus'
-import emitter from '@/utils/emitter'
+import emitter from '@/utils/emitter/emitter'
 import { register } from '@/http/api/auth'
+import { noticeSuccess } from '../../../utils/Notification/index'
 
 interface FormProps {
   username: string
@@ -161,11 +162,7 @@ const handleRegister = async () => {
   const { username, password, captcha } = ruleForm
   const { code } = await register({ username, password, captcha })
   if (code === 200) {
-    ElNotification({
-      title: 'Success',
-      message: '注册成功',
-      type: 'success',
-    })
+    noticeSuccess('注册成功')
     // 切换到登录表单
     changeShowFrom()
   }

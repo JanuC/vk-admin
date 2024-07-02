@@ -1,6 +1,7 @@
 import axios from 'axios'
 import router from '@/router'
-import { ElNotification } from 'element-plus'
+// import { ElNotification } from 'element-plus'
+import { noticeError } from '@/utils/Notification'
 import { refresh } from '@/http/api/auth'
 import { useStore } from '@/store'
 
@@ -47,11 +48,7 @@ request.interceptors.response.use(
       const { url } = config
       if (url === '/auth/refresh') {
         // 如果是请求刷新token接口返回的 401，说明全部token都已经失效
-        ElNotification({
-          title: 'Failed',
-          message,
-          type: 'error',
-        })
+        noticeError(message)
         router.push('/login')
       } else {
         // 请求其他接口返回的 401，可能只是  accessToken 失效
@@ -83,11 +80,7 @@ request.interceptors.response.use(
         }
       }
     } else {
-      ElNotification({
-        title: 'Failed',
-        message,
-        type: 'error',
-      })
+      noticeError(message)
     }
   }
 )

@@ -14,14 +14,14 @@
 </template>
 
 <script lang="ts" setup name="Login">
-import LoginForm from "./components/LoginForm.vue"
-import RegisterForm from "./components/RegisterForm.vue"
-import emitter from "@/utils/emitter"
+import LoginForm from './components/LoginForm.vue'
+import RegisterForm from './components/RegisterForm.vue'
+import emitter from '@/utils/emitter/emitter'
 
 // 当前展示的 form
-const showForm = ref<string>("loginForm")
+const showForm = ref<string>('loginForm')
 
-emitter.on("formName", (formName) => (showForm.value = formName))
+emitter.on('formName', (formName) => (showForm.value = formName))
 </script>
 
 <style lang="scss" scoped>

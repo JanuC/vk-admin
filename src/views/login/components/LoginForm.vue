@@ -58,10 +58,11 @@
 
 <script lang="ts" setup name="LoginForm">
 import { FormInstance, FormRules, ElNotification } from 'element-plus'
-import emitter from '@/utils/emitter'
+import emitter from '@/utils/emitter/emitter'
 import { login } from '@/http/api/auth'
 import router from '@/router'
 import { useStore } from '@/store/index'
+import { noticeSuccess } from '../../../utils/Notification/index'
 
 interface FormProps {
   username: string
@@ -133,11 +134,7 @@ const handleLogin = async () => {
     const { accessToken, userInfo } = data
     localStorage.setItem('accessToken', accessToken)
     user.setUserInfo(userInfo)
-    ElNotification({
-      title: 'Welcome',
-      message: `欢迎回来, ${userInfo.nickName}`,
-      type: 'success',
-    })
+    noticeSuccess(`欢迎回来, ${userInfo.nickName}`)
     router.push('/dashboard')
   }
   resetCaptcha()
