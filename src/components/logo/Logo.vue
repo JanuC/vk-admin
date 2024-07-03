@@ -1,5 +1,5 @@
 <template>
-  <div class="logo flex items-center w-full">
+  <div class="logo flex items-center w-full border-b-[0.01rem]">
     <div
       class="logo-img w-[6.4rem] h-full rounded-[50%] overflow-hidden flex justify-around items-center"
     >

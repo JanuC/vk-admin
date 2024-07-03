@@ -4,7 +4,7 @@ const colors = require('tailwindcss/colors')
 module.exports = {
   content: [
     './src/**/*.{vue,js,ts,jsx,tsx}',
-    './node_modules/element-plus/**/*.js',
+    // './node_modules/element-plus/**/*.js',
   ],
   theme: {
     colors: {
@@ -25,11 +25,6 @@ module.exports = {
         primary: '#ff0000',
       },
       fontSize: {
-        // sm: '1.2rem',
-        // base: '1.6rem',
-        // xl: '1.8rem',
-        // '2xl': '2rem',
-        // '3xl': '2.2rem',
         sm: ['1.2rem', { lineHeight: '1.5rem' }],
         base: ['1.6rem', { lineHeight: '2rem' }],
         xl: ['1.8rem', { lineHeight: '2.4rem' }],

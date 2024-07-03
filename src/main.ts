@@ -1,10 +1,10 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
+// import 'element-plus/dist/index.css'
 import 'tailwindcss/tailwind.css'
 import './styles/style.css'
 import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
 import { createPinia } from 'pinia'
 // pinia 持久化
 import piniaPluginPersist from 'pinia-plugin-persistedstate'
