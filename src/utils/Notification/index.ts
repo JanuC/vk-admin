@@ -12,7 +12,7 @@ export const noticeSuccess = (message: string) => {
 }
 
 export const noticeInfo = (message: string) => {
-  ElNotification.success({
+  ElNotification.info({
     title: 'Notice',
     message,
     type: 'info',
@@ -21,7 +21,7 @@ export const noticeInfo = (message: string) => {
 }
 
 export const noticeWarn = (message: string) => {
-  ElNotification.success({
+  ElNotification.warning({
     title: 'Warn',
     message,
     type: 'warning',
@@ -30,7 +30,7 @@ export const noticeWarn = (message: string) => {
 }
 
 export const noticeError = (message: string) => {
-  ElNotification.success({
+  ElNotification.error({
     title: 'Fail',
     message,
     type: 'error',

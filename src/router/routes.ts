@@ -16,7 +16,7 @@ const routes: RouteRecordRaw[] = [
         path: '/blogs',
         redirect: '/blogs/new',
 
-        meta: { title: '博客系统', icon: 'Monitor' },
+        meta: { title: '博客系统', icon: 'Notebook' },
         children: [
           {
             path: '/blogs/new',
