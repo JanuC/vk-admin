@@ -1,4 +1,12 @@
-html.china-red {
-  color-scheme: china-red;
-  --el-primary-color: #ff0000;
-}
+// @forward 'element-plus/theme-chalk/src/common/var.scss' with (
+//   $colors: (
+//     'primary': (
+//       'base': green,
+//     ),
+//   )
+// );
+@use './elementPlus/css-vars';
+@use './elementPlus/var';
+@use './elementPlus/breadcrumb';
+@use './elementPlus/input';
+@use './custom/ct-css-vars';

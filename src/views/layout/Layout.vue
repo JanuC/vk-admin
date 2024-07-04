@@ -11,8 +11,9 @@ import { type } from '../../auto-import';
       </el-aside>
       <el-container>
         <el-header class="h-[6rem] border-b-[0.01rem]">
-          <el-button type="primary">按钮</el-button>
-          <el-text type="primary">111</el-text>
+          <!-- <el-button type="primary">按钮</el-button>
+          <el-text type="primary">111</el-text> -->
+          <Header />
         </el-header>
         <el-main>
           <RouterView />
