@@ -15,10 +15,11 @@ export const createNewBlogTag = (data: any): Promise<DataProp<any>> => {
   })
 }
 
-export const getBlogTags = (): Promise<DataProp<any>> => {
+export const getBlogTags = (searchVal: string): Promise<DataProp<any>> => {
   return request({
     method: 'GET',
     url: '/blog-tag',
+    params: { searchVal },
   })
 }
 
@@ -30,5 +31,13 @@ export const updateBlogTagById = (
     method: 'PATCH',
     url: `/blog-tag/${id}`,
     data,
+  })
+}
+
+export const delBlogTagByIds = (ids: string[]): Promise<DataProp<any>> => {
+  return request({
+    method: 'DELETE',
+    url: 'blog-tag',
+    data: { ids },
   })
 }

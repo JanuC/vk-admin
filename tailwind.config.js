@@ -25,7 +25,8 @@ module.exports = {
         primary: '#ff0000',
       },
       fontSize: {
-        sm: ['1.2rem', { lineHeight: '1.5rem' }],
+        sm: ['1.2rem', { lineHeight: '1.4rem' }],
+        sm: ['1.4rem', { lineHeight: '1.6rem' }],
         base: ['1.6rem', { lineHeight: '2rem' }],
         xl: ['1.8rem', { lineHeight: '2.4rem' }],
         '2xl': ['2rem', { lineHeight: '2.6rem' }],

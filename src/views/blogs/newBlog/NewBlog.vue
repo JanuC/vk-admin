@@ -88,28 +88,41 @@
         <el-space size="large">
           <span>标签管理</span>
           <el-button
-            type="primary"
+            type="success"
             size="small"
             @click="isCreateTagDialogShow = true"
             >新建标签</el-button
           >
-          <el-button
-            type="danger"
-            size="small"
-            :disabled="!selectTagsList.length"
-            @click="handleDelTag(false)"
-            >删除选中</el-button
+
+          <el-popconfirm
+            title="删除后数据将不可找回, 确定删除吗?"
+            width="20rem"
+            @confirm="handleDelTag(false)"
+            @cancel="cancelDelTag"
           >
+            <template #reference>
+              <el-button
+                type="danger"
+                size="small"
+                :disabled="!selectTagsList.length"
+                >删除选中</el-button
+              >
+            </template>
+          </el-popconfirm>
+
           <span class="text-sm">筛选:</span>
           <el-input
             v-model="filterTagVal"
             size="small"
             placeholder="请输入标签名"
           />
+          <el-button size="small" type="primary" @click="getBlogTagList"
+            >查询</el-button
+          >
         </el-space>
       </template>
       <el-table
-        :data="filterTableData"
+        :data="tagsData"
         height="40rem"
         table-layout="auto"
         @selection-change="handleSelectTag"
@@ -171,9 +184,16 @@
               <el-button type="primary" link @click="handleEditTag(row)"
                 >编辑</el-button
               >
-              <el-button type="danger" link @click="handleDelTag(true, row.id)"
-                >删除</el-button
+              <el-popconfirm
+                title="删除后数据将不可找回, 确定删除吗?"
+                width="20rem"
+                @confirm="handleDelTag(true, row.id)"
+                @cancel="cancelDelTag"
               >
+                <template #reference>
+                  <el-button type="danger" link>删除</el-button>
+                </template>
+              </el-popconfirm>
             </el-col>
             <el-col v-else>
               <el-button type="success" link @click="saveTag">保存</el-button>
@@ -183,6 +203,9 @@
             </el-col>
           </template>
         </el-table-column>
+        <template #empty>
+          <NoData />
+        </template>
       </el-table>
       <el-dialog v-model="isCreateTagDialogShow" align-center width="40rem">
         <template #header> 新建标签 </template>
@@ -247,11 +270,13 @@
 <script lang="ts" setup>
 import {
   createNewBlogTag,
+  delBlogTagByIds,
   getBlogTags,
   updateBlogTagById,
 } from '@/http/api/blogTag'
 import { noticeSuccess } from '@/utils/Notification'
-import { ElNotification, FormInstance, FormRules } from 'element-plus'
+import { messageInfo } from '@/utils/message'
+import { FormInstance, FormRules } from 'element-plus'
 
 interface BlogFormProps {
   title: string
@@ -302,15 +327,15 @@ const delTagBySelected = (id: string) => {
 }
 
 // table 数据计算属性
-const filterTableData = computed(() =>
-  tagsData.value.filter(
-    (item) =>
-      !filterTagVal.value ||
-      item.label
-        .toLocaleLowerCase()
-        .includes(filterTagVal.value.toLocaleLowerCase())
-  )
-)
+// const filterTableData = computed(() =>
+//   tagsData.value.filter(
+//     (item) =>
+//       !filterTagVal.value ||
+//       item.label
+//         .toLocaleLowerCase()
+//         .includes(filterTagVal.value.toLocaleLowerCase())
+//   )
+// )
 
 // 保存编辑之前的 tag 的值
 const beforeEditTagVal = reactive<
@@ -341,14 +366,25 @@ const handleEditTag = (
  * @param single 是否为删除单个 true-是，false-否
  * @param id
  */
-const handleDelTag = (single: boolean, id?: string) => {
-  console.log(single, id)
-
+const handleDelTag = async (single: boolean, id?: string) => {
+  let ids: string[] = []
   if (single) {
     // 删除单个
+    ids.push(id!)
   } else {
     // 删除所有选中的
+    selectTagsList.value.forEach((item) => ids.push(item.id))
   }
+  const { code } = await delBlogTagByIds(ids)
+  if (code === 200) {
+    noticeSuccess('删除成功')
+    getBlogTagList()
+  }
+}
+
+// 取消删除
+const cancelDelTag = () => {
+  messageInfo('已取消操作')
 }
 
 /**
@@ -457,6 +493,7 @@ const sendRequestToCreateTag = async () => {
     noticeSuccess('创建成功')
     resetNewTagForm(newTagFormRef.value)
     isCreateTagDialogShow.value = false
+    getBlogTagList()
   }
 }
 
@@ -464,13 +501,22 @@ const sendRequestToCreateTag = async () => {
  * 获取所有标签
  */
 const getBlogTagList = async () => {
-  const { data } = await getBlogTags()
+  const { data } = await getBlogTags(filterTagVal.value)
   tagsData.value = data
 }
 
-onMounted(() => {
-  getBlogTagList()
-})
+// 当筛选条件为空时，发起请求
+watch(
+  filterTagVal,
+  (filterVal) => {
+    if (!filterVal) getBlogTagList()
+  },
+  {
+    immediate: true,
+  }
+)
+
+onMounted(() => {})
 </script>
 
 <style lang="scss" scoped></style>
