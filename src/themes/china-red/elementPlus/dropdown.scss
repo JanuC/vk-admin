@@ -1,0 +1,8 @@
+html.china-red {
+  .el-dropdown {
+    // 去除鼠标移入时的 黑框
+    .el-tooltip__trigger:focus-visible {
+      outline: unset;
+    }
+  }
+}

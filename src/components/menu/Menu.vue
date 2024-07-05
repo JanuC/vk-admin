@@ -2,7 +2,7 @@
   <div class="menu h-full flex flex-col">
     <div class="menu-container flex-1 overflow-auto">
       <el-menu
-        default-active="/dashboard"
+        :default-active="route.path"
         class="el-menu-vertical-demo !border-0"
         :collapse="isCollapse"
         :collapse-transition="true"
@@ -33,6 +33,10 @@
 <script lang="ts" setup name="Menu">
 import emitter from '@/utils/emitter/emitter'
 import routes from '../../router/routes'
+
+const route = useRoute()
+
+console.log('route', route)
 
 const isCollapse = ref(false)
 const handleOpen = (key: string, keyPath: string[]) => {

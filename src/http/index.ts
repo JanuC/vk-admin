@@ -17,7 +17,7 @@ request.interceptors.request.use(
     if (accessToken) {
       req.headers['Authorization'] = `Bearer ${accessToken}`
     } else {
-      router.push('/ligin')
+      router.push('/login')
     }
     return req
   },

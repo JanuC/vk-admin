@@ -3,7 +3,12 @@
     <div class="header-left">
       <Breadcrumb />
     </div>
-    <div class="header-right"></div>
+    <div class="header-right">
+      <el-space size="large">
+        <span>皮肤</span>
+        <userInfo />
+      </el-space>
+    </div>
   </div>
 </template>
 
