@@ -24,7 +24,6 @@ const crumbsHandle = () => {
     crumbs.value.push(item)
   })
   crumbs.value.shift()
-  console.log(crumbs)
 }
 
 watchEffect(() => crumbsHandle())

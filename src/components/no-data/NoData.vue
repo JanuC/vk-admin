@@ -4,7 +4,7 @@
       class="w-[10rem]"
       src="https://janu-picgo.oss-cn-chengdu.aliyuncs.com/images/empty.png"
     ></el-image>
-    <span>呜呜呜~我的数据去哪儿了?</span>
+    <span>呜呜呜~我的数据哪儿去了?</span>
   </div>
 </template>
 

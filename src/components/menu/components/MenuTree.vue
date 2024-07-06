@@ -34,8 +34,6 @@ const iconMap: { [key: string]: any } = Object.fromEntries(
 )
 
 const getIconComponent = (iconName: string) => iconMap[iconName] || null
-
-console.log(props)
 </script>
 
 <style lang="scss" scoped>

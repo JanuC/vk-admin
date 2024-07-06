@@ -33,14 +33,24 @@ const routes: RouteRecordRaw[] = [
         ],
       },
       {
-        path: '/permission',
-        redirect: '/permission/management',
-        meta: { title: '权限系统', icon: 'Unlock' },
+        path: '/user',
+        redirect: '/user/user-management',
+        meta: { title: '用户系统', icon: 'User' },
         children: [
           {
-            path: '/permission/management',
-            component: () => import('@/views/permission/Permission.vue'),
+            path: '/user/user-manamgement',
+            meta: { title: '用户管理' },
+            component: () => import('@/views/user/UserManagement.vue'),
+          },
+          {
+            path: '/user/permission-management',
+            component: () => import('@/views/user/Permission.vue'),
             meta: { title: '权限管理' },
+          },
+          {
+            path: '/user/route-management',
+            meta: { title: '路由管理' },
+            component: () => import('@/views/user/Route.vue'),
           },
         ],
       },

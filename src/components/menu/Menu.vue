@@ -7,8 +7,6 @@
         :collapse="isCollapse"
         :collapse-transition="true"
         router
-        @open="handleOpen"
-        @close="handleClose"
       >
         <MenuTree :menuList="routes[0].children" />
       </el-menu>
@@ -36,15 +34,7 @@ import routes from '../../router/routes'
 
 const route = useRoute()
 
-console.log('route', route)
-
 const isCollapse = ref(false)
-const handleOpen = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
-const handleClose = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
 
 const setMenuCollapse = (flag: boolean) => {
   isCollapse.value = flag

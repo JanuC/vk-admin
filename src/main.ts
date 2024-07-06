@@ -5,6 +5,7 @@ import 'element-plus/dist/index.css'
 import 'tailwindcss/tailwind.css'
 import './styles/style.css'
 import ElementPlus from 'element-plus'
+
 import { createPinia } from 'pinia'
 // pinia 持久化
 import piniaPluginPersist from 'pinia-plugin-persistedstate'

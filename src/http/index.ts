@@ -4,6 +4,8 @@ import router from '@/router'
 import { noticeError } from '@/utils/Notification'
 import { refresh } from '@/http/api/auth'
 import { useStore } from '@/store'
+import { ElLoading } from 'element-plus'
+import _ from 'lodash'
 
 const request = axios.create({
   withCredentials: true,
@@ -11,8 +13,67 @@ const request = axios.create({
   timeout: 5000,
 })
 
+// 是否正在请求中
+let loading: any
+
+// 当前请求数
+let requestCount: number = 0
+
+// 开始请求的时间
+let startTime: number
+
+// 显示 loading
+const showLoading = (target?: HTMLElement) => {
+  if (requestCount === 0 && !loading) {
+    startTime = Date.now()
+    loading = ElLoading.service({
+      lock: true,
+      text: '加载中...',
+      target: target || 'body',
+    })
+  }
+  requestCount++
+}
+
+let timer: any
+// 隐藏loading
+const hideLoading = () => {
+  requestCount--
+  requestCount = Math.max(requestCount, 0)
+
+  if (requestCount === 0) {
+    toHideLoading()
+    if (timer) clearTimeout(timer)
+  }
+}
+
+// 防抖
+const toHideLoading = _.debounce(() => {
+  loading.close()
+  loading = null
+}, 100)
+
+let minLoadTime: number = 500 // 最少请求时间
+const computedTime = (endTime: number) => {
+  return new Promise((resolve) => {
+    // 时间差
+    let timeDifference = endTime - startTime
+    if (timeDifference > minLoadTime) {
+      hideLoading()
+      resolve(null)
+    } else {
+      timer = setTimeout(() => {
+        hideLoading()
+        resolve(null)
+      }, minLoadTime - timeDifference)
+    }
+  })
+}
+
 request.interceptors.request.use(
   (req) => {
+    showLoading()
+
     const accessToken = localStorage.getItem('accessToken')
     if (accessToken) {
       req.headers['Authorization'] = `Bearer ${accessToken}`
@@ -21,8 +82,11 @@ request.interceptors.request.use(
     }
     return req
   },
-  (err) => {
-    console.log('请求拦截错误', err)
+  async (err) => {
+    // computedTime(Da)
+    await computedTime(Date.now())
+    console.log('请求被拦截', err)
+
     return Promise.reject(err)
   }
 )
@@ -35,8 +99,9 @@ let requests: any[] = []
 
 // 响应拦截
 request.interceptors.response.use(
-  (res: any) => {
+  async (res: any) => {
     const { data } = res
+    await computedTime(Date.now())
     return Promise.resolve(data)
   },
   async (err) => {
@@ -80,8 +145,10 @@ request.interceptors.response.use(
         }
       }
     } else {
+      await computedTime(Date.now())
       noticeError(message)
     }
+    return Promise.reject(err)
   }
 )
 
