@@ -43,14 +43,19 @@ const routes: RouteRecordRaw[] = [
             component: () => import('@/views/user/UserManagement.vue'),
           },
           {
+            path: '/user/role',
+            meta: { title: '角色管理' },
+            component: () => import('@/views/user/RoleManagement.vue'),
+          },
+          {
             path: '/user/permission-management',
-            component: () => import('@/views/user/Permission.vue'),
+            component: () => import('@/views/user/PermissionManagement.vue'),
             meta: { title: '权限管理' },
           },
           {
             path: '/user/route-management',
             meta: { title: '路由管理' },
-            component: () => import('@/views/user/Route.vue'),
+            component: () => import('@/views/user/RouteManagement.vue'),
           },
         ],
       },

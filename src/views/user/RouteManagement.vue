@@ -1,7 +1,5 @@
 <template>
-  <div class="route">
-    <Loading />
-  </div>
+  <div class="route">123</div>
 </template>
 
 <script lang="ts" setup></script>

@@ -49,8 +49,10 @@ const hideLoading = () => {
 
 // 防抖
 const toHideLoading = _.debounce(() => {
-  loading.close()
-  loading = null
+  if (loading) {
+    loading.close()
+    loading = null
+  }
 }, 100)
 
 let minLoadTime: number = 500 // 最少请求时间
@@ -83,10 +85,8 @@ request.interceptors.request.use(
     return req
   },
   async (err) => {
-    // computedTime(Da)
     await computedTime(Date.now())
     console.log('请求被拦截', err)
-
     return Promise.reject(err)
   }
 )
@@ -113,6 +113,7 @@ request.interceptors.response.use(
       const { url } = config
       if (url === '/auth/refresh') {
         // 如果是请求刷新token接口返回的 401，说明全部token都已经失效
+        await computedTime(Date.now())
         noticeError(message)
         router.push('/login')
       } else {
@@ -123,25 +124,40 @@ request.interceptors.response.use(
 
           const { username } = user.userInfo
 
-          const res = await refresh({ username })
+          try {
+            const res = await refresh({ username })
 
-          if (res) {
-            const { accessToken } = res.data
-            // 存储 token
-            localStorage.setItem('accessToken', accessToken)
+            if (res) {
+              const { accessToken } = res.data
+              // 存储 token
+              localStorage.setItem('accessToken', accessToken)
 
-            // 设置token在config中
-            config.headers['Authorization'] = `Bearer ${accessToken}`
+              // 设置token在config中
+              config.headers['Authorization'] = `Bearer ${accessToken}`
 
-            // 拿到了最新的 token，执行刷新token期间的其他请求
-            requests.forEach((callback) => callback(accessToken))
+              // 拿到了最新的 token，执行刷新token期间的其他请求
+              requests.forEach((callback) => callback(accessToken))
 
-            // 已完成 token 刷新
+              // 已完成 token 刷新
+              isRefreshingToken = false
+
+              // 执行最开始返回 401 的请求
+              return request(config)
+            }
+          } catch (refreshError) {
             isRefreshingToken = false
-
-            // 执行最开始返回 401 的请求
-            return request(config)
+            await computedTime(Date.now())
+            // noticeError('Token刷新失败，请重新登录')
+            router.push('/login')
           }
+        } else {
+          // 正在刷新 token，将请求添加到队列中
+          return new Promise((resolve) => {
+            requests.push((token: string) => {
+              config.headers['Authorization'] = `Bearer ${token}`
+              resolve(request(config))
+            })
+          })
         }
       }
     } else {

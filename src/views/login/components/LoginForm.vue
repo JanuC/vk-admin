@@ -140,8 +140,18 @@ const handleLogin = async () => {
   resetCaptcha()
 }
 
+// 键盘按下时间
+
+const keydown = (e: KeyboardEvent) => {
+  if (e.key === 'Enter') onSubmit(loginFormRef.value)
+}
+
 onMounted(() => {
   resetCaptcha()
+  window.addEventListener('keydown', keydown)
+})
+onUnmounted(() => {
+  window.removeEventListener('keydown', keydown, false)
 })
 </script>
 

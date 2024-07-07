@@ -52,7 +52,11 @@ export default defineConfig({
     Components({
       // dirs 指定组件所在位置，默认为 src/components
       // 可以让我们使用自己定义组件的时候免去 import 的麻烦
-      dirs: ['src/components/', 'src/pages/lauch/components/'],
+      dirs: [
+        'src/components/',
+        'src/pages/lauch/components/',
+        'src/**/components/',
+      ],
       // 配置需要将哪些后缀类型的文件进行自动按需引入，'vue'为默认值
       extensions: ['vue'],
       // 解析组件，这里以 Element Plus 为例

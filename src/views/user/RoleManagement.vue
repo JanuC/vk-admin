@@ -2,7 +2,7 @@
   <div class="user-manamgement w-full h-full flex flex-col">
     <el-card shadow="never" class="mb-[0.4rem] !border-none">
       <el-space>
-        <el-button type="primary" @click="handleCreate">新建用户</el-button>
+        <el-button type="primary" @click="handleCreate">新建角色</el-button>
         <el-button type="danger" :disabled="!selectedRows.length"
           >禁用选中</el-button
         >
@@ -13,10 +13,10 @@
           :model="queryForm"
           ref="queryFormRef"
         >
-          <el-form-item label="用户名:" prop="username">
+          <el-form-item label="角色名:" prop="name">
             <el-input
-              placeholder="请输入用户名"
-              v-model="queryForm.username"
+              placeholder="请输入角色名"
+              v-model="queryForm.name"
             ></el-input>
           </el-form-item>
           <el-form-item>
@@ -40,16 +40,18 @@
           <el-table-column
             type="selection"
             width="55"
-            :selectable="(row: UserProps) => Boolean(!row.isDefault)"
+            :selectable="(row: RoleProps) => Boolean(!row.isDefault)"
           />
-          <el-table-column label="用户名" prop="username"></el-table-column>
-          <el-table-column label="昵称" prop="nickName"></el-table-column>
-          <el-table-column label="角色数" align="center">
+          <!-- <el-table-column label="角色id" prop="id"></el-table-column> -->
+          <el-table-column label="角色名" prop="name"></el-table-column>
+          <el-table-column label="预设角色" prop="isDefault" align="center">
             <template #default="{ row }">
-              <el-text type="primary">{{ row.roles.length }}</el-text>
+              <el-text type="success" v-if="row.isDefault == 1">是</el-text>
+              <el-text type="danger" v-else>否</el-text>
             </template>
           </el-table-column>
-          <el-table-column label="路由数"></el-table-column>
+          <!-- <el-table-column label="角色数"></el-table-column>
+          <el-table-column label="路由数"></el-table-column> -->
           <el-table-column label="创建时间">
             <template #default="{ row }">
               {{ formatDate(row.createTime) }}
@@ -66,7 +68,7 @@
                 >编辑</el-button
               >
               <el-button link @click="handleDetail(row.id)">详情</el-button>
-              <el-tooltip content="预设用户不能禁用" v-if="row.isDefault">
+              <el-tooltip content="预设角色不能禁用">
                 <el-button
                   link
                   type="warning"
@@ -74,46 +76,11 @@
                   >禁用</el-button
                 >
               </el-tooltip>
-              <template v-else>
-                <el-popconfirm
-                  v-if="row.isEnable"
-                  title="禁用后该用户将不能登录, 确定禁用吗?"
-                  width="20rem"
-                  @confirm="handleChang(row.id, 0)"
-                  @cancel="messageInfo('已取消操作')"
-                >
-                  <template #reference>
-                    <el-button type="danger" link>禁用</el-button>
-                  </template>
-                </el-popconfirm>
-                <el-popconfirm
-                  v-else="!row.isEnable"
-                  title="启用后该用户将恢复正常, 确定禁启用吗?"
-                  width="20rem"
-                  @confirm="handleChang(row.id, 1)"
-                  @cancel="messageInfo('已取消操作')"
-                >
-                  <template #reference>
-                    <el-button type="success" link>启用</el-button>
-                  </template>
-                </el-popconfirm>
-              </template>
-              <el-tooltip content="预设用户不能删除" v-if="row.isDefault">
+              <el-tooltip content="预设角色不能删除">
                 <el-button link type="danger" :disabled="Boolean(row.isDefault)"
                   >删除</el-button
                 >
               </el-tooltip>
-              <el-popconfirm
-                v-else
-                title="删除用户后将不可找回, 确定删除吗?"
-                width="20rem"
-                @confirm="handleDelete(row.id)"
-                @cancel="messageInfo('已取消操作')"
-              >
-                <template #reference>
-                  <el-button type="danger" link>删除</el-button>
-                </template>
-              </el-popconfirm>
             </template>
           </el-table-column>
           <template #empty>
@@ -136,28 +103,25 @@
       </template>
     </el-card>
   </div>
-  <UserDialog
-    v-model:userDialogData="userDialogData"
-    @getNewData="getTableData"
+  <RoleDialog
+    v-model:roleDialogData="roleDialogData"
+    @updateData="getTableData"
   />
 </template>
 
 <script lang="ts" setup>
-import { getUserList, getUserListCount } from '@/http/api/user'
+import { getRoleList } from '@/http/api/role'
 import { formatDate } from '../../utils/formatDate/index'
 import { FormInstance } from 'element-plus'
-// import UserDialog from './components/UserDialog.vue'
-import { deleteUserById, changeUserStatus } from '../../http/api/user'
-import { noticeSuccess } from '../../utils/Notification/index'
-import { messageInfo } from '@/utils/message'
+import { getRoleListCount } from '../../http/api/role'
 
-const queryForm = ref<QueryFormProps>({
-  username: '',
+const queryForm = ref<QueryRoleProps>({
+  name: '',
   current: 1,
   pageSize: 10,
 })
 
-const tableData = ref<UserProps[]>([])
+const tableData = ref<RoleProps[]>([])
 
 const total = ref<number>(0)
 
@@ -165,15 +129,14 @@ const queryFormRef = ref<FormInstance>()
 
 // 获取数据
 const getList = async () => {
-  const { data } = await getUserList({ ...queryForm.value })
-  console.log(data)
+  const { data } = await getRoleList({ ...queryForm.value })
+
   tableData.value = data
 }
 
 // 获取符合条件的数据长度
 const getListCount = async () => {
-  const { data } = await getUserListCount({ ...queryForm.value })
-
+  const { data } = await getRoleListCount({ ...queryForm.value })
   total.value = data
 }
 
@@ -202,7 +165,7 @@ const getTableData = () => {
   getListCount()
 }
 
-const userDialogData = reactive<UserDialogProps>({
+const roleDialogData = reactive<RoleDialogProps>({
   isShow: false,
   type: 'edit',
   id: '',
@@ -210,38 +173,22 @@ const userDialogData = reactive<UserDialogProps>({
 
 // 新建用户按钮
 const handleCreate = () => {
-  userDialogData.isShow = true
-  userDialogData.type = 'create'
+  roleDialogData.isShow = true
+  roleDialogData.type = 'create'
 }
 
 // 编辑用户按钮
 const handleEdit = (id: string) => {
-  userDialogData.isShow = true
-  userDialogData.type = 'edit'
-  userDialogData.id = id
+  roleDialogData.isShow = true
+  roleDialogData.type = 'edit'
+  roleDialogData.id = id
 }
 
 // 用户详情按钮
 const handleDetail = (id: string) => {
-  userDialogData.isShow = true
-  userDialogData.type = 'detail'
-
-  userDialogData.id = id
-}
-
-// 删除用户
-const handleDelete = async (id: string) => {
-  await deleteUserById(id)
-  noticeSuccess('删除用户成功')
-  getTableData()
-}
-
-// 禁用用户
-const handleChang = async (id: string, isEnable: 0 | 1) => {
-  await changeUserStatus(id, { isEnable })
-  const typeText = isEnable ? '启用' : '禁用'
-  noticeSuccess(`${typeText}用户成功`)
-  getTableData()
+  roleDialogData.isShow = true
+  roleDialogData.type = 'detail'
+  roleDialogData.id = id
 }
 
 onMounted(() => {

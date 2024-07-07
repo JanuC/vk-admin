@@ -1177,6 +1177,11 @@ caniuse-lite@^1.0.30001599, caniuse-lite@^1.0.30001629:
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001636.tgz#b15f52d2bdb95fad32c2f53c0b68032b85188a78"
   integrity sha512-bMg2vmr8XBsbL6Lr0UHXy/21m84FTxDLWn2FSqMd5PrlbMxwJlQnC2YWYxVgp66PZE+BBNF2jYQUBKCo1FDeZg==
 
+china-division@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/china-division/-/china-division-2.7.0.tgz#4060a4d243be66c7833dea64a48a4038f3e53e74"
+  integrity sha512-4uUPAT+1WfqDh5jytq7omdCmHNk3j+k76zEG/2IqaGcYB90c2SwcixttcypdsZ3T/9tN1TTpBDoeZn+Yw/qBEA==
+
 "chokidar@>=3.0.0 <4.0.0", chokidar@^3.5.3, chokidar@^3.6.0:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.6.0.tgz#197c6cc669ef2a8dc5e7b4d97ee4e092c3eb0d5b"
@@ -1321,6 +1326,13 @@ electron-to-chromium@^1.4.796:
   version "1.4.807"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.807.tgz#4d6c5ea1516f0164ac5bfd487ccd4ee9507c8f01"
   integrity sha512-kSmJl2ZwhNf/bcIuCH/imtNOKlpkLDn2jqT5FJ+/0CXjhnFaOa9cOe9gHKKy71eM49izwuQjZhKk+lWQ1JxB7A==
+
+element-china-area-data@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/element-china-area-data/-/element-china-area-data-6.1.0.tgz#f14b90c0762b21432e097ed5be8423514a0b57e3"
+  integrity sha512-IkpcjwQv2A/2AxFiSoaISZ+oMw1rZCPUSOg5sOCwT5jKc96TaawmKZeY81xfxXsO0QbKxU5LLc6AirhG52hUmg==
+  dependencies:
+    china-division "^2.7.0"
 
 element-plus@^2.7.6:
   version "2.7.6"
