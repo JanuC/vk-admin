@@ -21,22 +21,6 @@
           <el-table-column label="操作"></el-table-column>
         </el-table>
       </template>
-
-      <!-- <template #footer>
-        <div class="flex justify-around">
-          <el-pagination
-            class="text-center"
-            v-model:current-page="queryForm.current"
-            v-model:page-size="queryForm.pageSize"
-            :page-sizes="[10, 20, 50, 100]"
-            layout="total, sizes, prev, pager, next, jumper"
-            hide-on-single-page
-            :total="total"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-          />
-        </div>
-      </template> -->
     </el-card>
   </div>
 </template>
@@ -53,6 +37,7 @@ const tableData = ref<RouteDataProps[]>([
     icon: '',
     createTime: new Date(),
     updateTime: new Date(),
+    children: [],
   },
   {
     id: '2',
@@ -64,7 +49,7 @@ const tableData = ref<RouteDataProps[]>([
     updateTime: new Date(),
     children: [
       {
-        id: '2.1',
+        id: '5',
         path: '/test2.1',
         title: '测试2.1',
         component: '/2.1',
@@ -73,7 +58,7 @@ const tableData = ref<RouteDataProps[]>([
         updateTime: new Date(),
       },
       {
-        id: '2.2',
+        id: '6',
         path: '/test2.2',
         title: '测试2.2',
         component: '/2.2',
@@ -82,7 +67,7 @@ const tableData = ref<RouteDataProps[]>([
         updateTime: new Date(),
       },
       {
-        id: '2.3',
+        id: '7',
         path: '/test2.3',
         title: '测试2.3',
         component: '/2.3',
@@ -100,6 +85,7 @@ const tableData = ref<RouteDataProps[]>([
     icon: '',
     createTime: new Date(),
     updateTime: new Date(),
+    children: [],
   },
   {
     id: '4',
@@ -109,6 +95,7 @@ const tableData = ref<RouteDataProps[]>([
     icon: '',
     createTime: new Date(),
     updateTime: new Date(),
+    children: [],
   },
 ])
 
@@ -144,35 +131,43 @@ const initSortable = () => {
     chosenClass: 'drop-chosenClass',
     fallbackOnBody: true,
 
-    onAdd(evt: any) {
-      // 拖拽时候添加有新的节点的时候发生该事件
-      console.log('onAdd.foo:', [evt.item, evt.from])
-    },
-    onUpdate(evt: any) {
-      // 拖拽更新节点位置发生该事件
-      console.log('onUpdate.foo:', [evt.item, evt.from])
-    },
-    onRemove(evt: any) {
-      // 删除拖拽节点的时候促发该事件
-      console.log('onRemove.foo:', [evt.item, evt.from])
-    },
-    onStart(evt: any) {
-      // 开始拖拽出发该函数
-      console.log('onStart.foo:', [evt.item, evt.from])
-    },
-    onSort(evt: any) {
-      // 发生排序发生该事件
-      console.log('onUpdate.foo:', [evt.item, evt.from])
-    },
+    // onAdd(evt: any) {
+    //   // 拖拽时候添加有新的节点的时候发生该事件
+    //   console.log('onAdd.foo:', [evt.item, evt.from])
+    // },
+    // onUpdate(evt: any) {
+    //   // 拖拽更新节点位置发生该事件
+    //   console.log('onUpdate.foo:', [evt.item, evt.from])
+    // },
+    // onRemove(evt: any) {
+    //   // 删除拖拽节点的时候促发该事件
+    //   console.log('onRemove.foo:', [evt.item, evt.from])
+    // },
+    // onStart(evt: any) {
+    //   // 开始拖拽出发该函数
+    //   console.log('onStart.foo:', [evt.item, evt.from])
+    // },
+    // onSort(evt: any) {
+    //   // 发生排序发生该事件
+    //   console.log('onUpdate.foo:', [evt.item, evt.from])
+    // },
 
     // 关键代码
     onEnd(evt: any) {
       // 结束拖拽
+      console.log(evt)
+
       console.log(
         '结束表格拖拽',
         `拖动前索引${evt.oldIndex}---拖动后索引${evt.newIndex}`
       )
+      // const item = tableData.value.splice(evt.oldIndex, 1)[0]
+      // tableData.value.splice(evt.newIndex, 0, item)
+
+      // console.log(tableData.value)
+
       // getList(evt)
+      // console.log('table', tableData.value)
     },
   })
 }
