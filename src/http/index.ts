@@ -29,6 +29,7 @@ const showLoading = (target?: HTMLElement) => {
     loading = ElLoading.service({
       lock: true,
       text: '加载中...',
+      background: 'var(--el-loading-bg-color)',
       target: target || 'body',
     })
   }

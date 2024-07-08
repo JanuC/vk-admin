@@ -7,7 +7,7 @@ interface UserProps {
   isEnable: 0 | 1
   isDefault: 0 | 1
   address: string
-  area: string[]
+  area: string[] | null
   roleIds: string[]
   avatar: string
   createTime: Date
@@ -36,7 +36,7 @@ interface UserDialogProps {
 
 interface dialogUserFormProps
   extends Omit<UserProps, 'id' | 'createTime' | 'updateTime'> {
-  area: string[]
+  area: string[] | null
   password: string
   confirmPassword: string
 }

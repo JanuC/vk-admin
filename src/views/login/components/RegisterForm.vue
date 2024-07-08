@@ -91,21 +91,26 @@ const rules = reactive<FormRules<FormProps>>({
   username: [
     {
       required: true,
-      message: '请输入用户名',
-      trigger: 'blur',
+      message: '用户名不能为空',
+      trigger: ['blur', 'change'],
+    },
+    {
+      pattern: /^[A-Za-z0-9-_]+$/,
+      message: '用户名只能为英文、数字或者下划线',
+      trigger: ['blur', 'change'],
     },
     {
       min: 4,
       max: 10,
       message: '用户名长度必须为4-10位',
-      trigger: 'change',
+      trigger: ['blur', 'change'],
     },
   ],
   password: [
     {
       required: true,
-      message: '请输入密码',
-      trigger: 'blur',
+      message: '密码不能为空',
+      trigger: ['blur', 'change'],
     },
     {
       validator: (_: any, value: string, callback: any) => {
@@ -116,7 +121,7 @@ const rules = reactive<FormRules<FormProps>>({
         }
         callback()
       },
-      trigger: 'change',
+      trigger: ['blur', 'change'],
     },
   ],
   confirmPassword: [
@@ -136,8 +141,8 @@ const rules = reactive<FormRules<FormProps>>({
     },
   ],
   captcha: [
-    { required: true, message: '请输入验证码', trigger: 'blur' },
-    { max: 4, min: 4, message: '验证码为4位', trigger: 'change' },
+    { required: true, message: '请输入验证码', trigger: ['blur', 'change'] },
+    { max: 4, min: 4, message: '验证码为4位', trigger: ['blur', 'change'] },
   ],
 })
 

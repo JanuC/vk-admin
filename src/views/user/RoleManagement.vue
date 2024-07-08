@@ -29,7 +29,7 @@
     <el-card
       shadow="never"
       class="flex-1 !border-none flex flex-col"
-      body-class=" flex-1"
+      body-class=" flex-1  min-h-0"
     >
       <template #default>
         <el-table
@@ -68,19 +68,63 @@
                 >编辑</el-button
               >
               <el-button link @click="handleDetail(row.id)">详情</el-button>
-              <el-tooltip content="预设角色不能禁用">
-                <el-button
-                  link
-                  type="warning"
-                  :disabled="Boolean(row.isDefault)"
-                  >禁用</el-button
+              <template v-if="row.isDefault">
+                <el-tooltip content="预设角色不能禁用">
+                  <el-button
+                    link
+                    type="warning"
+                    :disabled="Boolean(row.isDefault)"
+                    >禁用</el-button
+                  >
+                </el-tooltip>
+                <el-tooltip content="预设角色不能删除">
+                  <el-button
+                    link
+                    type="danger"
+                    :disabled="Boolean(row.isDefault)"
+                    >删除</el-button
+                  >
+                </el-tooltip>
+              </template>
+              <template v-else>
+                <el-popconfirm
+                  v-if="Boolean(row.isEnable)"
+                  title="禁用后该角色将不可用, 确定禁用吗?"
+                  width="20rem"
+                  @confirm="handleChangeRoleStatus(row.id, 0)"
+                  @cancel="messageInfo('已取消操作')"
                 >
-              </el-tooltip>
-              <el-tooltip content="预设角色不能删除">
-                <el-button link type="danger" :disabled="Boolean(row.isDefault)"
-                  >删除</el-button
+                  <template #reference>
+                    <el-button type="warning" link>禁用</el-button>
+                  </template>
+                </el-popconfirm>
+                <el-popconfirm
+                  v-else
+                  title="启用后该角色将恢复正常, 确定启用吗?"
+                  width="20rem"
+                  @confirm="handleChangeRoleStatus(row.id, 1)"
+                  @cancel="messageInfo('已取消操作')"
                 >
-              </el-tooltip>
+                  <template #reference>
+                    <el-button link type="success">启用</el-button>
+                  </template>
+                </el-popconfirm>
+                <el-popconfirm
+                  title="删除后该角色将不可恢复, 确定删除吗?"
+                  width="20rem"
+                  @confirm="handlerDelRole(row.id)"
+                  @cancel="messageInfo('已取消操作')"
+                >
+                  <template #reference>
+                    <el-button
+                      link
+                      type="danger"
+                      :disabled="Boolean(row.isDefault)"
+                      >删除</el-button
+                    >
+                  </template>
+                </el-popconfirm>
+              </template>
             </template>
           </el-table-column>
           <template #empty>
@@ -96,7 +140,6 @@
             v-model:page-size="queryForm.pageSize"
             :page-sizes="[10, 20, 50, 100]"
             layout="total, sizes, prev, pager, next, jumper"
-            hide-on-single-page
             :total="total"
           />
         </div>
@@ -113,7 +156,13 @@
 import { getRoleList } from '@/http/api/role'
 import { formatDate } from '../../utils/formatDate/index'
 import { FormInstance } from 'element-plus'
-import { getRoleListCount } from '../../http/api/role'
+import {
+  getRoleListCount,
+  changeRoleStatus,
+  delRoleById,
+} from '../../http/api/role'
+import { noticeSuccess } from '../../utils/Notification/index'
+import { messageInfo } from '@/utils/message'
 
 const queryForm = ref<QueryRoleProps>({
   name: '',
@@ -189,6 +238,21 @@ const handleDetail = (id: string) => {
   roleDialogData.isShow = true
   roleDialogData.type = 'detail'
   roleDialogData.id = id
+}
+
+// 禁启用角色
+const handleChangeRoleStatus = async (id: string, isEnable: number) => {
+  await changeRoleStatus(id, { isEnable })
+  const title = isEnable ? '启用' : '禁用'
+  noticeSuccess(`${title}角色成功`)
+  getTableData()
+}
+
+// 删除角色
+const handlerDelRole = async (id: string) => {
+  await delRoleById(id)
+  noticeSuccess('删除角色成功')
+  getTableData()
 }
 
 onMounted(() => {

@@ -135,7 +135,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="10">
-                <el-form-item label="启用:" prop="disabled">
+                <el-form-item label="启用:" prop="isEnable">
                   <el-radio-group
                     v-model="userForm.isEnable"
                     :disabled="
@@ -157,7 +157,7 @@
             <el-form-item prop="roles">
               <el-checkbox-group
                 v-model="userForm.roleIds"
-                :disabled="userForm.isDefault"
+                :disabled="Boolean(userForm.isDefault)"
               >
                 <el-checkbox
                   v-for="item in allRoles"
@@ -220,7 +220,7 @@ const userForm = reactive<dialogUserFormProps>({
   email: '',
   phone: '',
   avatar: '',
-  area: [],
+  area: null,
   address: '',
   roleIds: [],
 })
@@ -232,6 +232,11 @@ const userFormRules = reactive<FormRules<dialogUserFormProps>>({
     {
       required: true,
       message: '用户名不能为空',
+      trigger: ['blur', 'change'],
+    },
+    {
+      pattern: /^[A-Za-z0-9-_]+$/,
+      message: '用户名只能为英文、数字或者下划线',
       trigger: ['blur', 'change'],
     },
     {
@@ -321,6 +326,8 @@ const getData = () => {
 // 获取所有角色
 const getAllRolesList = async () => {
   const { data } = await getAllRoles()
+  console.log(data)
+
   allRoles.value = data
   // 将预设角色默认选中
   data.forEach((role) => {

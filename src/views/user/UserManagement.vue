@@ -29,7 +29,7 @@
     <el-card
       shadow="never"
       class="flex-1 !border-none flex flex-col"
-      body-class=" flex-1"
+      body-class=" flex-1  min-h-0"
     >
       <template #default>
         <el-table
@@ -66,7 +66,10 @@
                 >编辑</el-button
               >
               <el-button link @click="handleDetail(row.id)">详情</el-button>
-              <el-tooltip content="预设用户不能禁用" v-if="row.isDefault">
+              <el-tooltip
+                content="预设用户不能禁用"
+                v-if="Boolean(row.isDefault)"
+              >
                 <el-button
                   link
                   type="warning"
@@ -76,7 +79,7 @@
               </el-tooltip>
               <template v-else>
                 <el-popconfirm
-                  v-if="row.isEnable"
+                  v-if="Boolean(row.isEnable)"
                   title="禁用后该用户将不能登录, 确定禁用吗?"
                   width="20rem"
                   @confirm="handleChang(row.id, 0)"
@@ -98,7 +101,10 @@
                   </template>
                 </el-popconfirm>
               </template>
-              <el-tooltip content="预设用户不能删除" v-if="row.isDefault">
+              <el-tooltip
+                content="预设用户不能删除"
+                v-if="Boolean(row.isDefault)"
+              >
                 <el-button link type="danger" :disabled="Boolean(row.isDefault)"
                   >删除</el-button
                 >
@@ -129,7 +135,6 @@
             v-model:page-size="queryForm.pageSize"
             :page-sizes="[10, 20, 50, 100]"
             layout="total, sizes, prev, pager, next, jumper"
-            hide-on-single-page
             :total="total"
           />
         </div>

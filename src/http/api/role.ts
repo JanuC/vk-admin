@@ -49,3 +49,18 @@ export const getAllRoles = (): Promise<ResponseProps<RoleProps[]>> => {
     url: '/role/list/all',
   })
 }
+
+export const changeRoleStatus = (id: string, data: { isEnable: number }) => {
+  return request({
+    method: 'PATCH',
+    url: `/role/status/${id}`,
+    data,
+  })
+}
+
+export const delRoleById = (id: string) => {
+  return request({
+    method: 'DELETE',
+    url: `/role/${id}`,
+  })
+}
