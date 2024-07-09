@@ -12,7 +12,14 @@
       body-class=" flex-1 min-h-0"
     >
       <template #default>
-        <el-table height="100%" :data="tableData" row-key="id">
+        <el-table
+          height="100%"
+          :data="tableData"
+          row-key="id"
+          :key="tableKey"
+          :expand-row-keys="expandRowsId"
+          @expand-change="handleExpandRow"
+        >
           <el-table-column label="路由名" prop="title"></el-table-column>
           <el-table-column label="访问路径" prop="path"></el-table-column>
           <el-table-column label="组件路径" prop="component"></el-table-column>
@@ -27,8 +34,10 @@
 
 <script lang="ts" setup>
 import Sortable from 'sortablejs'
+import { flattenArray, unflattenArray } from '../../utils/flattenArray/index'
+import { noticeError } from '../../utils/Notification/index'
 
-const tableData = ref<RouteDataProps[]>([
+let tableData = ref<RouteDataProps[]>([
   {
     id: '1',
     path: '/test1',
@@ -54,6 +63,7 @@ const tableData = ref<RouteDataProps[]>([
         title: '测试2.1',
         component: '/2.1',
         icon: '',
+        parentId: '2',
         createTime: new Date(),
         updateTime: new Date(),
       },
@@ -63,6 +73,7 @@ const tableData = ref<RouteDataProps[]>([
         title: '测试2.2',
         component: '/2.2',
         icon: '',
+        parentId: '2',
         createTime: new Date(),
         updateTime: new Date(),
       },
@@ -72,8 +83,31 @@ const tableData = ref<RouteDataProps[]>([
         title: '测试2.3',
         component: '/2.3',
         icon: '',
+        parentId: '2',
         createTime: new Date(),
         updateTime: new Date(),
+        children: [
+          {
+            id: '8',
+            path: '/test2.4',
+            title: '测试2.4',
+            component: '/2.4',
+            icon: '',
+            parentId: '7',
+            createTime: new Date(),
+            updateTime: new Date(),
+          },
+          {
+            id: '9',
+            path: '/test2.5',
+            title: '测试2.5',
+            component: '/2.5',
+            icon: '',
+            parentId: '7',
+            createTime: new Date(),
+            updateTime: new Date(),
+          },
+        ],
       },
     ],
   },
@@ -115,6 +149,22 @@ const handleSizeChange = () => {}
 // 切换分页
 const handleCurrentChange = () => {}
 
+// 当前展开行的 id
+const expandRowsId = ref<string[]>([])
+
+// table key 值
+const tableKey = ref<number>(0)
+
+// 展开或者关闭行
+const handleExpandRow = (row: RouteDataProps, expanded: boolean) => {
+  if (expanded) {
+    expandRowsId.value.push(row.id)
+  } else {
+    const idx = expandRowsId.value.findIndex((item) => item === row.id)
+    expandRowsId.value.splice(idx, 1)
+  }
+}
+
 // 初始化 sortable
 const initSortable = () => {
   // 获取元素
@@ -131,43 +181,31 @@ const initSortable = () => {
     chosenClass: 'drop-chosenClass',
     fallbackOnBody: true,
 
-    // onAdd(evt: any) {
-    //   // 拖拽时候添加有新的节点的时候发生该事件
-    //   console.log('onAdd.foo:', [evt.item, evt.from])
-    // },
-    // onUpdate(evt: any) {
-    //   // 拖拽更新节点位置发生该事件
-    //   console.log('onUpdate.foo:', [evt.item, evt.from])
-    // },
-    // onRemove(evt: any) {
-    //   // 删除拖拽节点的时候促发该事件
-    //   console.log('onRemove.foo:', [evt.item, evt.from])
-    // },
-    // onStart(evt: any) {
-    //   // 开始拖拽出发该函数
-    //   console.log('onStart.foo:', [evt.item, evt.from])
-    // },
-    // onSort(evt: any) {
-    //   // 发生排序发生该事件
-    //   console.log('onUpdate.foo:', [evt.item, evt.from])
-    // },
-
     // 关键代码
-    onEnd(evt: any) {
-      // 结束拖拽
-      console.log(evt)
-
-      console.log(
-        '结束表格拖拽',
-        `拖动前索引${evt.oldIndex}---拖动后索引${evt.newIndex}`
-      )
-      // const item = tableData.value.splice(evt.oldIndex, 1)[0]
-      // tableData.value.splice(evt.newIndex, 0, item)
-
-      // console.log(tableData.value)
-
-      // getList(evt)
-      // console.log('table', tableData.value)
+    onEnd({ oldIndex, newIndex }: { oldIndex: number; newIndex: number }) {
+      let table = Object.assign([], toRaw(tableData.value))
+      const newTable = flattenArray(table) as RouteDataProps[]
+      // 将数组扁平化
+      const sourceObj = newTable[oldIndex]
+      const targetObj = newTable[newIndex]
+      // 判断是否为同一级
+      if (
+        (!sourceObj.parentId && !targetObj.parentId) ||
+        sourceObj.parentId === targetObj.parentId
+      ) {
+        const currRow = newTable.splice(oldIndex, 1)[0]
+        newTable.splice(newIndex, 0, currRow)
+        let endTable = unflattenArray(newTable) as RouteDataProps[]
+        tableData.value = endTable
+      } else {
+        noticeError('只能在同级之间进行拖拽排序')
+        tableData.value = table
+      }
+      tableKey.value++
+      nextTick(() => {
+        // 重新初始化 sortablejs
+        initSortable()
+      })
     },
   })
 }

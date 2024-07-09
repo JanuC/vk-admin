@@ -5,7 +5,7 @@ interface RouteDataProps {
   title: string
   icon: string
   children?: RouteDataProps[]
-  // parent: RouteDataProps
+  parentId?: string | null
   createTime: Date
   updateTime: Date
 }
