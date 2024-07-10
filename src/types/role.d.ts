@@ -9,6 +9,7 @@ interface RoleProps {
   name: string
   isCommon: 0 | 1
   isDefault: 0 | 1
+  isTopRole: 0 | 1
   enumVal: string
   createTime?: Date
   updateTime?: Date

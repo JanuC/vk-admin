@@ -30,6 +30,7 @@
       </template>
     </el-card>
   </div>
+  <RouteDialog v-model:routeDialogData="routeDialogData" />
 </template>
 
 <script lang="ts" setup>
@@ -141,7 +142,15 @@ const queryForm = ref<QueryRouteProps>({
 
 const total = ref<number>(0)
 
-const handleCreate = () => {}
+const routeDialogData = ref<RouteDialogProps>({
+  type: 'create',
+  id: '',
+  isShow: true,
+})
+
+const handleCreate = () => {
+  routeDialogData.value.isShow = true
+}
 
 // 切换分页大小
 const handleSizeChange = () => {}

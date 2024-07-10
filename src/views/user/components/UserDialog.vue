@@ -326,7 +326,7 @@ const getData = () => {
 // 获取所有角色
 const getAllRolesList = async () => {
   const { data } = await getAllRoles()
-  console.log(data)
+  // console.log(data)
 
   allRoles.value = data
   // 将预设角色默认选中
