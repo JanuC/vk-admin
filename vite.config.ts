@@ -15,7 +15,7 @@ import vueSetupExtend from 'vite-plugin-vue-setup-extend'
 export default defineConfig({
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src'),
+      '@': resolve(__dirname, 'src'),
     },
   },
   css: {

@@ -26,113 +26,26 @@
           <el-table-column label="图表" prop="icon"></el-table-column>
           <el-table-column label="创建时间" prop="createTime"></el-table-column>
           <el-table-column label="操作"></el-table-column>
+          <template #empty>
+            <NoData />
+          </template>
         </el-table>
       </template>
     </el-card>
   </div>
-  <RouteDialog v-model:routeDialogData="routeDialogData" />
+  <RouteDialog
+    v-model:routeDialogData="routeDialogData"
+    @updateData="getData"
+  />
 </template>
 
 <script lang="ts" setup>
 import Sortable from 'sortablejs'
-import { flattenArray, unflattenArray } from '../../utils/flattenArray/index'
-import { noticeError } from '../../utils/Notification/index'
+import { flattenArray, unflattenArray } from '@/utils/flattenArray/index'
+import { noticeError } from '@/utils/Notification/index'
+import { getAllRoutes } from '@/http/api/route'
 
-let tableData = ref<RouteDataProps[]>([
-  {
-    id: '1',
-    path: '/test1',
-    title: '测试1',
-    component: '/1',
-    icon: '',
-    createTime: new Date(),
-    updateTime: new Date(),
-    children: [],
-  },
-  {
-    id: '2',
-    path: '/test2',
-    title: '测试2',
-    component: '/2',
-    icon: '',
-    createTime: new Date(),
-    updateTime: new Date(),
-    children: [
-      {
-        id: '5',
-        path: '/test2.1',
-        title: '测试2.1',
-        component: '/2.1',
-        icon: '',
-        parentId: '2',
-        createTime: new Date(),
-        updateTime: new Date(),
-      },
-      {
-        id: '6',
-        path: '/test2.2',
-        title: '测试2.2',
-        component: '/2.2',
-        icon: '',
-        parentId: '2',
-        createTime: new Date(),
-        updateTime: new Date(),
-      },
-      {
-        id: '7',
-        path: '/test2.3',
-        title: '测试2.3',
-        component: '/2.3',
-        icon: '',
-        parentId: '2',
-        createTime: new Date(),
-        updateTime: new Date(),
-        children: [
-          {
-            id: '8',
-            path: '/test2.4',
-            title: '测试2.4',
-            component: '/2.4',
-            icon: '',
-            parentId: '7',
-            createTime: new Date(),
-            updateTime: new Date(),
-          },
-          {
-            id: '9',
-            path: '/test2.5',
-            title: '测试2.5',
-            component: '/2.5',
-            icon: '',
-            parentId: '7',
-            createTime: new Date(),
-            updateTime: new Date(),
-          },
-        ],
-      },
-    ],
-  },
-  {
-    id: '3',
-    path: '/test3',
-    title: '测试3',
-    component: '/3',
-    icon: '',
-    createTime: new Date(),
-    updateTime: new Date(),
-    children: [],
-  },
-  {
-    id: '4',
-    path: '/test4',
-    title: '测试4',
-    component: '/4',
-    icon: '',
-    createTime: new Date(),
-    updateTime: new Date(),
-    children: [],
-  },
-])
+let tableData = ref<RouteDataProps[]>([])
 
 const queryForm = ref<QueryRouteProps>({
   current: 1,
@@ -145,7 +58,7 @@ const total = ref<number>(0)
 const routeDialogData = ref<RouteDialogProps>({
   type: 'create',
   id: '',
-  isShow: true,
+  isShow: false,
 })
 
 const handleCreate = () => {
@@ -219,8 +132,21 @@ const initSortable = () => {
   })
 }
 
+// 获取所有路由
+const getAllRouteList = async () => {
+  const { data } = await getAllRoutes()
+  console.log('d', data)
+
+  tableData.value = data
+}
+
+const getData = () => {
+  getAllRouteList()
+}
+
 onMounted(() => {
-  initSortable()
+  // initSortable()
+  getData()
 })
 </script>
 

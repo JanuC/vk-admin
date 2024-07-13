@@ -3,9 +3,9 @@ interface RouteDataProps {
   path: string
   component: string
   title: string
-  icon?: string
-  children?: RouteDataProps[]
-  parentId?: string | null
+  icon: string
+  children: RouteDataProps[]
+  parentId: string | null
   createTime: Date
   updateTime: Date
 }
