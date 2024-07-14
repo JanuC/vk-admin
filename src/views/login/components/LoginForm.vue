@@ -132,8 +132,9 @@ const handleLogin = async () => {
   const { code, data } = await login(ruleForm)
   if (code === 200) {
     const { accessToken, userInfo } = data
-    localStorage.setItem('accessToken', accessToken)
+    // localStorage.setItem('accessToken', accessToken)
     user.setUserInfo(userInfo)
+    user.setToken(accessToken)
     noticeSuccess(`欢迎回来, ${userInfo.nickName}`)
     router.push('/dashboard')
   }

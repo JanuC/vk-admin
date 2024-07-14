@@ -163,6 +163,7 @@
             :key="item.id"
             :value="item.id"
             :label="item.title"
+            :disabled="routeDialogData.id === item.id"
           ></el-option>
         </el-select>
       </el-form-item>
@@ -210,6 +211,8 @@ import { getAllRoles } from '@/http/api/role'
 import _ from 'lodash'
 import * as Icons from '@element-plus/icons-vue'
 import { noticeSuccess } from '@/utils/Notification'
+import { getRoleById } from '../../../http/api/role'
+import { getRouteById, updateRouteById } from '../../../http/api/route'
 import {
   createNewRoute,
   getAllRoutes,
@@ -385,17 +388,45 @@ const handleClose = (formEl: FormInstance | undefined) => {
 const handleConfirm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid) => {
-    if (valid) createRoute()
+    if (valid) createOrUpdateRoute()
   })
 }
 
-//创建新路由
-const createRoute = async () => {
-  const { path } = routeForm.value
-  await createNewRoute({
-    ...routeForm.value,
-  })
-  noticeSuccess('新建路由成功')
+watch(
+  () => routeDialogData.value.id,
+  (newId) => {
+    if (newId) getTargetRoute(newId)
+  }
+)
+
+// 获取目标路由
+const getTargetRoute = async (id: string) => {
+  const { data } = await getRouteById(id)
+  console.log('data', data)
+
+  // const { path, icon, component, title, roleIds, isTopRoute, parentId } = data
+  routeForm.value = data
+  // routeForm.value.icon = icon
+  // routeForm.value.path = path
+  // routeForm.value.title = title
+  // routeForm.value.component = component
+  // routeForm.value.parentId = parentId
+  // routeForm.value.isTopRoute = isTopRoute
+  // routeForm.value.roleIds = roleIds
+}
+
+//创建或者更新路由
+const createOrUpdateRoute = async () => {
+  const { id } = routeDialogData.value
+  if (id) {
+    await updateRouteById(id, { ...routeForm.value })
+    noticeSuccess('更新路由成功')
+  } else {
+    await createNewRoute({
+      ...routeForm.value,
+    })
+    noticeSuccess('新建路由成功')
+  }
   handleClose(routeFormRef.value)
   emits('updateData')
 }
@@ -405,9 +436,16 @@ const getData = () => {
   getParentRoutes()
 }
 
-onMounted(() => {
-  getData()
-})
+watch(
+  () => routeDialogData.value.isShow,
+  (newVal) => {
+    if (newVal) getData()
+  }
+)
+
+// onMounted(() => {
+//   getData()
+// })
 </script>
 
 <style lang="scss" scoped></style>

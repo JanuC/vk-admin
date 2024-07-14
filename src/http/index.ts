@@ -76,8 +76,9 @@ const computedTime = (endTime: number) => {
 request.interceptors.request.use(
   (req) => {
     showLoading()
-
-    const accessToken = localStorage.getItem('accessToken')
+    const { user } = useStore()
+    // const accessToken = localStorage.getItem('accessToken')
+    const accessToken = user.accessToken
     if (accessToken) {
       req.headers['Authorization'] = `Bearer ${accessToken}`
     } else {

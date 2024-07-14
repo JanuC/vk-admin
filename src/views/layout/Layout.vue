@@ -1,4 +1,3 @@
-import { type } from '../../auto-import';
 <template>
   <div class="w-full h-full">
     <el-container class="w-full h-full">
@@ -24,6 +23,15 @@ import { type } from '../../auto-import';
   </div>
 </template>
 
-<script lang="ts" setup name="Layout"></script>
+<script lang="ts" setup name="Layout">
+import { useStore } from '../../store/index'
+const { user } = useStore()
+// onMounted(() => {
+//   window.addEventListener('load', () => {
+//     // console.log(123)
+//     user.setIsAddRoutes(false)
+//   })
+// })
+</script>
 
 <style lang="scss" scoped></style>

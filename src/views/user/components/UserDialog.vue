@@ -364,6 +364,7 @@ const getTargetUser = async (id: string) => {
     avatar,
     isEnable,
     isDefault,
+    roleIds,
   } = data
 
   userForm.username = username
@@ -374,6 +375,7 @@ const getTargetUser = async (id: string) => {
   userForm.area = area
   userForm.avatar = avatar
   userForm.isEnable = isEnable
+  userForm.roleIds = roleIds
   userForm.address = address ? address : ''
 }
 

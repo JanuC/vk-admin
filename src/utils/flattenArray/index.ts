@@ -29,7 +29,7 @@ export const unflattenArray = <T>(arr: TreeNode<T>[]): TreeNode<T>[] => {
   const roots: TreeNode<T>[] = []
 
   arr.forEach((node) => {
-    if (node.parentId === undefined) {
+    if (node.parentId === undefined || node.parentId === null) {
       roots.push(map.get(node.id)!)
     } else {
       const parent = map.get(node.parentId)

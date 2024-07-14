@@ -33,3 +33,35 @@ export const getRoutesIsParent = (): Promise<
     url: '/route/list/parent',
   })
 }
+
+export const getRouteById = (
+  id: string
+): Promise<ResponseProps<RouteFormProps>> => {
+  return request({
+    method: 'GET',
+    url: `/route/${id}`,
+  })
+}
+
+export const updateRouteById = (id: string, data: RouteFormProps) => {
+  return request({
+    method: 'PATCH',
+    url: `/route/${id}`,
+    data,
+  })
+}
+
+export const deleteRouteById = (id: string) => {
+  return request({
+    method: 'DELETE',
+    url: `/route/${id}`,
+  })
+}
+
+export const updateRouteOrder = (data: OrderProps[]) => {
+  return request({
+    method: 'PATCH',
+    url: '/route/list/order',
+    data,
+  })
+}

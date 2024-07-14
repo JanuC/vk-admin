@@ -9,6 +9,8 @@ interface UserProps {
   address: string
   area: string[] | null
   roleIds: string[]
+  roles?: RoleProps[]
+  routes?: RouteProps[]
   avatar: string
   createTime: Date
   updateTime: Date

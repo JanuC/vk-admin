@@ -36,6 +36,7 @@ const handleLogout = async (username: string) => {
   await logout({ username })
   noticeSuccess(`Good Bye~ ${username}`)
   localStorage.removeItem('accessToken')
+
   router.push('/login')
 }
 </script>

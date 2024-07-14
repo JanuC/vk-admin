@@ -6,6 +6,7 @@ interface RouteDataProps {
   icon: string
   children: RouteDataProps[]
   parentId: string | null
+  order: number
   createTime: Date
   updateTime: Date
 }
@@ -30,4 +31,9 @@ interface RouteFormProps {
   parentId?: string
   roleIds: string[]
   isTopRoute: 0 | 1
+}
+
+interface OrderProps {
+  id: string
+  order: number
 }
