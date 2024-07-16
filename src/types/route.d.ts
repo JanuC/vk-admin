@@ -5,6 +5,7 @@ interface RouteDataProps {
   title: string
   icon: string
   children: RouteDataProps[]
+  name: string
   parentId: string | null
   order: number
   createTime: Date

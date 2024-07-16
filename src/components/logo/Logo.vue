@@ -16,7 +16,7 @@
   </div>
 </template>
 
-<script lang="ts" setup name="Logi">
+<script lang="ts" setup name="Logo">
 import emitter from '@/utils/emitter/emitter'
 
 // 控制 Logo 文字的显示

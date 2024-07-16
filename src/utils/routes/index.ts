@@ -9,13 +9,15 @@ export const formatUserRoutes = (
 ): RouteRecordRaw[] => {
   const routes: RouteRecordRaw[] = []
   userRoutes.forEach((route) => {
-    const { path, icon, title, component, children } = route
+    const { path, icon, title, component, children, name } = route
     let routeObj: RouteRecordRaw = {
       path,
       redirect: '',
       component: null,
+      name: '',
       children: [],
     }
+    routeObj.name = name
     const meta = { icon, title }
     routeObj.meta = meta
     if (component) {

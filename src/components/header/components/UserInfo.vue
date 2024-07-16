@@ -26,7 +26,8 @@
 import { useStore } from '../../../store/index'
 import { logout } from '../../../http/api/auth'
 import { noticeSuccess } from '../../../utils/Notification/index'
-const { user } = useStore()
+
+const { user, routeStore } = useStore()
 const { userInfo } = user
 
 const router = useRouter()
@@ -36,7 +37,8 @@ const handleLogout = async (username: string) => {
   await logout({ username })
   noticeSuccess(`Good Bye~ ${username}`)
   localStorage.removeItem('accessToken')
-
+  user.setUserInfo({} as any)
+  user.setToken('')
   router.push('/login')
 }
 </script>
