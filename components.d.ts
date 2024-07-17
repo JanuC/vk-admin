@@ -8,6 +8,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Breadcrumb: typeof import('./src/components/breadcrumb/Breadcrumb.vue')['default']
+    CustomLoading: typeof import('./src/components/loading/CustomLoading.vue')['default']
     Editor: typeof import('./src/components/editor/Editor.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
@@ -75,5 +76,8 @@ declare module 'vue' {
     UploadImage: typeof import('./src/components/upload/UploadImage.vue')['default']
     UserDialog: typeof import('./src/views/user/components/UserDialog.vue')['default']
     UserInfo: typeof import('./src/components/header/components/UserInfo.vue')['default']
+  }
+  export interface ComponentCustomProperties {
+    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
   }
 }

@@ -39,6 +39,7 @@ const handleLogout = async (username: string) => {
   localStorage.removeItem('accessToken')
   user.setUserInfo({} as any)
   user.setToken('')
+  routeStore.setIsAddRoutes(false)
   router.push('/login')
 }
 </script>

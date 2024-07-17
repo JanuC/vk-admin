@@ -1,62 +1,33 @@
-import axios from 'axios'
-import router from '@/router'
-// import { ElNotification } from 'element-plus'
-import { noticeError } from '@/utils/Notification'
-import { refresh } from '@/http/api/auth'
 import { useStore } from '@/store'
-import { ElLoading } from 'element-plus'
+import { noticeError } from '@/utils/Notification'
+import axios from 'axios'
+import { refresh } from './api/auth'
+import router from '@/router'
 import _ from 'lodash'
 
 const request = axios.create({
-  withCredentials: true,
+  withCredentials: true, // 允许跨域
   baseURL: import.meta.env.VITE_BASE_URL,
   timeout: 5000,
 })
 
-// 是否正在请求中
-let loading: any
+const { loadingStore } = useStore()
 
-// 当前请求数
 let requestCount: number = 0
-
 // 开始请求的时间
 let startTime: number
+let minLoadTime: number = 500 // 最少请求时间
+let timer: any
 
 // 显示 loading
 const showLoading = (target?: HTMLElement) => {
-  if (requestCount === 0 && !loading) {
+  if (requestCount === 0 && !loadingStore.isLoading) {
     startTime = Date.now()
-    loading = ElLoading.service({
-      lock: true,
-      text: '加载中...',
-      background: 'var(--el-loading-bg-color)',
-      target: target || 'body',
-    })
+    loadingStore.setIsLoading(true)
   }
   requestCount++
 }
 
-let timer: any
-// 隐藏loading
-const hideLoading = () => {
-  requestCount--
-  requestCount = Math.max(requestCount, 0)
-
-  if (requestCount === 0) {
-    toHideLoading()
-    if (timer) clearTimeout(timer)
-  }
-}
-
-// 防抖
-const toHideLoading = _.debounce(() => {
-  if (loading) {
-    loading.close()
-    loading = null
-  }
-}, 100)
-
-let minLoadTime: number = 500 // 最少请求时间
 const computedTime = (endTime: number) => {
   return new Promise((resolve) => {
     // 时间差
@@ -73,11 +44,30 @@ const computedTime = (endTime: number) => {
   })
 }
 
+// 隐藏loading
+const hideLoading = () => {
+  requestCount--
+  requestCount = Math.max(requestCount, 0)
+
+  if (requestCount === 0) {
+    toHideLoading()
+    if (timer) clearTimeout(timer)
+  }
+}
+
+// 防抖
+const toHideLoading = _.debounce(() => {
+  if (loadingStore.isLoading) {
+    loadingStore.setIsLoading(false)
+  }
+}, 100)
+
+// 全局请求拦截
 request.interceptors.request.use(
   (req) => {
+    // // loadingStore.add
     showLoading()
     const { user } = useStore()
-    // const accessToken = localStorage.getItem('accessToken')
     const accessToken = user.accessToken
     if (accessToken) {
       req.headers['Authorization'] = `Bearer ${accessToken}`
@@ -87,53 +77,53 @@ request.interceptors.request.use(
     return req
   },
   async (err) => {
+    console.log('请求拦截时发生错误')
     await computedTime(Date.now())
-    console.log('请求被拦截', err)
     return Promise.reject(err)
   }
 )
 
-// 声明一个全局变量，用于当前是否正在刷新token
+// 声明 一个全局变量，用于判断当前是否在刷新token
 let isRefreshingToken = false
 
 // 当前正在刷新token时，存储下同一时间的请求，方便token刷新完成后重新请求
 let requests: any[] = []
 
-// 响应拦截
+// 全局响应拦截
 request.interceptors.response.use(
-  async (res: any) => {
+  async (res) => {
     const { data } = res
     await computedTime(Date.now())
     return Promise.resolve(data)
   },
   async (err) => {
-    const { user } = useStore()
     const { response, config } = err
-
     const { message } = response.data
+    const { user } = useStore()
+    // const router = useRouter()
     if (response.status === 401) {
+      // 当前 accessToken 已失效
       const { url } = config
+
+      console.log('url', url)
+
       if (url === '/auth/refresh') {
-        // 如果是请求刷新token接口返回的 401，说明全部token都已经失效
         await computedTime(Date.now())
+        console.log('所有token都已失效')
         noticeError(message)
+
         router.push('/login')
       } else {
-        // 请求其他接口返回的 401，可能只是  accessToken 失效
+        // 其他请求返回的 401，请求刷新token
         if (!isRefreshingToken) {
-          // 说明当前没有在刷新 token
           isRefreshingToken = true
-
           const { username } = user.userInfo
 
           try {
             const res = await refresh({ username })
-
             if (res) {
               const { accessToken } = res.data
-              // 存储 token
-              localStorage.setItem('accessToken', accessToken)
-
+              user.setToken(accessToken)
               // 设置token在config中
               config.headers['Authorization'] = `Bearer ${accessToken}`
 
@@ -153,10 +143,11 @@ request.interceptors.response.use(
             router.push('/login')
           }
         } else {
-          // 正在刷新 token，将请求添加到队列中
           return new Promise((resolve) => {
             requests.push((token: string) => {
+              // 保存当前请求的 config
               config.headers['Authorization'] = `Bearer ${token}`
+              // 保存在队列中
               resolve(request(config))
             })
           })
@@ -166,7 +157,6 @@ request.interceptors.response.use(
       await computedTime(Date.now())
       noticeError(message)
     }
-    return Promise.reject(err)
   }
 )
 

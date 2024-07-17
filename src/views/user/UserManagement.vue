@@ -35,6 +35,7 @@
         <el-table
           height="100%"
           :data="tableData"
+          v-cLoading="loadingStore.isLoading"
           @selection-change="handleSelectionChange"
         >
           <el-table-column
@@ -155,12 +156,15 @@ import { FormInstance } from 'element-plus'
 import { deleteUserById, changeUserStatus } from '../../http/api/user'
 import { noticeSuccess } from '../../utils/Notification/index'
 import { messageInfo } from '@/utils/message'
+import { useStore } from '../../store/index'
 
 const queryForm = ref<QueryFormProps>({
   username: '',
   current: 1,
   pageSize: 10,
 })
+
+const { loadingStore } = useStore()
 
 const tableData = ref<UserProps[]>([])
 
@@ -171,7 +175,7 @@ const queryFormRef = ref<FormInstance>()
 // 获取数据
 const getList = async () => {
   const { data } = await getUserList({ ...queryForm.value })
-  console.log(data)
+
   tableData.value = data
 }
 

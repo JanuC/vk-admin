@@ -9,9 +9,9 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
-  console.log(to.path)
+const whiteList = ['/login']
 
+router.beforeEach((to, from, next) => {
   // 开启顶部进度条
   openProgress()
   const { user, routeStore } = useStore()
@@ -19,7 +19,6 @@ router.beforeEach((to, from, next) => {
   const { routes: userRoutes } = user.userInfo
 
   if (to.path === '/login') {
-    routeStore.setIsAddRoutes(false)
     next()
   } else {
     if (!routeStore.isAddRoutes && userRoutes) {
@@ -27,7 +26,7 @@ router.beforeEach((to, from, next) => {
         (route) => route.name === 'layout'
       ) as RouteRecordRaw
 
-      console.log('lay', layout)
+      // console.log('lay', layout)
       const userRouteList = formatUserRoutes(userRoutes as any)
 
       // layout?.children?.push(...userRouteList)
