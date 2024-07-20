@@ -36,6 +36,7 @@
           height="100%"
           :data="tableData"
           @selection-change="handleSelectionChange"
+          v-cLoading="loadingStore.isLoading && !roleDialogData.isShow"
         >
           <el-table-column
             type="selection"
@@ -163,6 +164,9 @@ import {
 } from '../../http/api/role'
 import { noticeSuccess } from '../../utils/Notification/index'
 import { messageInfo } from '@/utils/message'
+import { useStore } from '../../store/index'
+
+const { loadingStore } = useStore()
 
 const queryForm = ref<QueryRoleProps>({
   name: '',

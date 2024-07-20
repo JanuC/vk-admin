@@ -1,5 +1,5 @@
 <template>
-  <div class="permission w-full h-full" v-cLoading="isLoading">权限</div>
+  <div class="permission w-full h-full">权限</div>
 </template>
 
 <script lang="ts" setup>

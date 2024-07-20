@@ -1,5 +1,4 @@
-// 自定义 loading 指令
-import type { App, Directive, DirectiveBinding } from 'vue'
+import { App, Directive, DirectiveBinding, createApp } from 'vue'
 import CustomLoading from '@/components/loading/CustomLoading.vue'
 
 const loadingDirective: Directive = {
@@ -16,11 +15,16 @@ const loadingDirective: Directive = {
   updated(el: HTMLElement & { instance: any }, binding: DirectiveBinding) {
     binding.value ? appendEl(el) : removeEl(el)
   },
+  unmounted(el: HTMLElement & { instance: any }) {
+    if (el.instance) {
+      removeEl(el)
+      el.instance = null
+    }
+  },
 }
 
 const appendEl = (el: HTMLElement & { instance: any }) => {
   const style = getComputedStyle(el)
-  // 如果父元素未进行定位，则添加定位
   if (['absolute', 'fixed', 'relative'].indexOf(style.position) === -1) {
     el.style.position = 'relative'
   }
@@ -28,8 +32,10 @@ const appendEl = (el: HTMLElement & { instance: any }) => {
 }
 
 const removeEl = (el: HTMLElement & { instance: any }) => {
-  el.style.position = 'static'
-  el.removeChild(el.instance.$el)
+  if (el && el.instance && el.contains(el.instance.$el)) {
+    el.style.position = ''
+    el.removeChild(el.instance.$el)
+  }
 }
 
 export default loadingDirective

@@ -35,7 +35,7 @@
         <el-table
           height="100%"
           :data="tableData"
-          v-cLoading="loadingStore.isLoading"
+          v-cLoading="loadingStore.isLoading && !userDialogData.isShow"
           @selection-change="handleSelectionChange"
         >
           <el-table-column

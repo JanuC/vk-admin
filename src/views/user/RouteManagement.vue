@@ -22,11 +22,11 @@
           height="100%"
           :data="tableData"
           row-key="id"
-          default-expand-all
           :key="tableKey"
           :expand-row-keys="expandRowsId"
           @expand-change="handleExpandRow"
           :class="isSort ? 'select-none' : ''"
+          v-cLoading="loadingStore.isLoading && !routeDialogData.isShow"
         >
           <el-table-column label="路由名" prop="title"></el-table-column>
           <el-table-column label="访问路径" prop="path"></el-table-column>
@@ -102,6 +102,7 @@ import { noticeSuccess } from '../../utils/Notification/index'
 import { messageInfo } from '@/utils/message'
 import * as Icons from '@element-plus/icons-vue'
 import { formatDate } from '../../utils/formatDate/index'
+import { useStore } from '../../store/index'
 
 let tableData = ref<RouteDataProps[]>([])
 
@@ -110,6 +111,8 @@ const queryForm = ref<QueryRouteProps>({
   pageSize: 10,
   title: '',
 })
+
+const { loadingStore } = useStore()
 
 const total = ref<number>(0)
 
@@ -207,9 +210,10 @@ const initSortable = () => {
         newTable.splice(newIndex, 0, currRow)
 
         // 更新 order 字段
-        let len = newTable.length
+        // let len = newTable.length
+
         newTable.forEach((route, idx) => {
-          route.order = len - idx
+          route.order = idx
         })
 
         let endTable = unflattenArray(newTable) as RouteDataProps[]

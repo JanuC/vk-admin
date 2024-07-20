@@ -63,6 +63,7 @@ import { login } from '@/http/api/auth'
 import router from '@/router'
 import { useStore } from '@/store/index'
 import { noticeSuccess } from '../../../utils/Notification/index'
+import { encryptString } from '../../../utils/md5/index'
 
 interface FormProps {
   username: string
@@ -129,7 +130,10 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
 }
 
 const handleLogin = async () => {
-  const { code, data } = await login(ruleForm)
+  const { code, data } = await login({
+    ...ruleForm,
+    password: encryptString(ruleForm.password),
+  })
   if (code === 200) {
     const { accessToken, userInfo } = data
     // localStorage.setItem('accessToken', accessToken)

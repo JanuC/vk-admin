@@ -69,6 +69,7 @@ import { FormRules, FormInstance, ElNotification } from 'element-plus'
 import emitter from '@/utils/emitter/emitter'
 import { register } from '@/http/api/auth'
 import { noticeSuccess } from '../../../utils/Notification/index'
+import { encryptString } from '../../../utils/md5/index'
 
 interface FormProps {
   username: string
@@ -165,7 +166,11 @@ const onSubmit = async (formEl: FormInstance | undefined) => {
 // 注册功能
 const handleRegister = async () => {
   const { username, password, captcha } = ruleForm
-  const { code } = await register({ username, password, captcha })
+  const { code } = await register({
+    username,
+    password: encryptString(password),
+    captcha,
+  })
   if (code === 200) {
     noticeSuccess('注册成功')
     // 切换到登录表单

@@ -13,6 +13,7 @@
       :model="routeForm"
       label-width="auto"
       :rules="routeFormRules"
+      v-cLoading="loadingStore.isLoading"
     >
       <el-form-item prop="title">
         <template #label>
@@ -66,7 +67,7 @@
           <el-tooltip>
             <template #content>
               <div class="w-[20rem]">
-                组件路径，本系统中顶级路由该值为空，默认重定向到顶级路由第一个子路由
+                组件路径，如果该值为空，默认重定向到顶级路由第一个子路由
               </div>
             </template>
             <div class="flex items-center cursor-pointer">
@@ -75,14 +76,9 @@
           </el-tooltip>
         </template>
         <el-input
-          :placeholder="
-            Boolean(routeForm.isTopRoute)
-              ? '顶级路由无需组件'
-              : '请输入组件路径'
-          "
+          placeholder="请输入组件路径"
           v-model="routeForm.component"
           clearable
-          :disabled="Boolean(routeForm.isTopRoute)"
         ></el-input>
       </el-form-item>
       <el-form-item label="路由图标:" prop="icon">
@@ -219,11 +215,15 @@ import {
   getRoutesIsParent,
 } from '@/http/api/route'
 
+import { useStore } from '@/store/index'
+
 const routeDialogData = defineModel<RouteDialogProps>(
   'routeDialogData'
 ) as ModelRef<RouteDialogProps>
 
 const emits = defineEmits(['updateData'])
+
+const { loadingStore } = useStore()
 
 // 根据不同的 type 计算不同的 title
 const computedTitle = computed(() => (type: string) => {
@@ -297,21 +297,21 @@ const routeFormRules = reactive<FormRules<RouteFormProps>>({
     },
     trigger: ['change', 'blur'],
   },
-  component: [
-    {
-      validator: (_: any, value: string, callback: any) => {
-        const { isTopRoute } = routeForm.value
-        if (Boolean(isTopRoute) && value) {
-          callback(new Error('父级路由无需组件路径'))
-        }
-        if (!Boolean(isTopRoute) && !value) {
-          callback(new Error('子级路由必需组件路径'))
-        }
-        callback()
-      },
-      trigger: ['change', 'blur'],
-    },
-  ],
+  // component: [
+  //   {
+  //     validator: (_: any, value: string, callback: any) => {
+  //       const { isTopRoute } = routeForm.value
+  //       // if (Boolean(isTopRoute) && value) {
+  //       //   callback(new Error('父级路由无需组件路径'))
+  //       // }
+  //       // if (!Boolean(isTopRoute) && !value) {
+  //       //   callback(new Error('子级路由必需组件路径'))
+  //       // }
+  //       callback()
+  //     },
+  //     trigger: ['change', 'blur'],
+  //   },
+  // ],
   parentId: [
     {
       validator: (_: any, value: string, callback: any) => {
@@ -371,7 +371,6 @@ const parentRoute = ref<RouteDataProps[]>([])
 const getParentRoutes = async () => {
   const { data } = await getRoutesIsParent()
   parentRoute.value = data
-  console.log(data)
 }
 
 const handleEdit = () => {}
@@ -402,17 +401,8 @@ watch(
 // 获取目标路由
 const getTargetRoute = async (id: string) => {
   const { data } = await getRouteById(id)
-  console.log('data', data)
 
-  // const { path, icon, component, title, roleIds, isTopRoute, parentId } = data
   routeForm.value = data
-  // routeForm.value.icon = icon
-  // routeForm.value.path = path
-  // routeForm.value.title = title
-  // routeForm.value.component = component
-  // routeForm.value.parentId = parentId
-  // routeForm.value.isTopRoute = isTopRoute
-  // routeForm.value.roleIds = roleIds
 }
 
 //创建或者更新路由

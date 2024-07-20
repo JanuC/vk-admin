@@ -20,7 +20,7 @@ let minLoadTime: number = 500 // 最少请求时间
 let timer: any
 
 // 显示 loading
-const showLoading = (target?: HTMLElement) => {
+const showLoading = () => {
   if (requestCount === 0 && !loadingStore.isLoading) {
     startTime = Date.now()
     loadingStore.setIsLoading(true)
@@ -60,7 +60,7 @@ const toHideLoading = _.debounce(() => {
   if (loadingStore.isLoading) {
     loadingStore.setIsLoading(false)
   }
-}, 100)
+}, 0)
 
 // 全局请求拦截
 request.interceptors.request.use(
@@ -105,8 +105,6 @@ request.interceptors.response.use(
       // 当前 accessToken 已失效
       const { url } = config
 
-      console.log('url', url)
-
       if (url === '/auth/refresh') {
         await computedTime(Date.now())
         console.log('所有token都已失效')
@@ -143,6 +141,7 @@ request.interceptors.response.use(
             router.push('/login')
           }
         } else {
+          requestCount = 0
           return new Promise((resolve) => {
             requests.push((token: string) => {
               // 保存当前请求的 config

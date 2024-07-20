@@ -13,6 +13,7 @@
       inline
       :rules="roleFormRules"
       ref="roleFormRef"
+      v-cLoading="loadingStore.isLoading"
     >
       <el-form-item label="角色名:" prop="name">
         <el-input v-model="roleForm.name" placeholder="请输入角色名"></el-input>
@@ -56,9 +57,12 @@ import { ModelRef } from 'vue'
 import { FormInstance, FormRules } from 'element-plus'
 import { createNewRole, getRoleById, updateRole } from '../../../http/api/role'
 import { noticeSuccess } from '../../../utils/Notification/index'
+import { useStore } from '../../../store/index'
 const roleDialogData = defineModel<RoleDialogProps>(
   'roleDialogData'
 ) as ModelRef<RoleDialogProps>
+
+const { loadingStore } = useStore()
 
 const emits = defineEmits(['updateData'])
 

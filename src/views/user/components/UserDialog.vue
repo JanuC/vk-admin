@@ -14,6 +14,7 @@
         label-width="auto"
         :rules="userFormRules"
         ref="userFormRef"
+        v-cLoading="loadingStore.isLoading"
       >
         <el-collapse v-model="activeCollapse">
           <el-collapse-item title="基础表单" name="basic">
@@ -199,12 +200,15 @@ import {
   codeToText,
   pcaTextArr,
 } from 'element-china-area-data'
+import { useStore } from '@/store/index'
 
 const userDialogData = defineModel<UserDialogProps>(
   'userDialogData'
 ) as ModelRef<UserDialogProps>
 
 const emits = defineEmits(['getNewData'])
+
+const { loadingStore } = useStore()
 
 // 默认展开的面板
 const activeCollapse = ref<string[]>(['basic', 'role'])
