@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import 'element-plus/dist/index.css'
 import 'tailwindcss/tailwind.css'
-import './styles/style.css'
+import './styles/style.scss'
 import ElementPlus from 'element-plus'
 import loadingDirective from './utils/directive/loading'
 

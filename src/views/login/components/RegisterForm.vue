@@ -65,7 +65,7 @@
 </template>
 
 <script lang="ts" setup name="registerForm">
-import { FormRules, FormInstance, ElNotification } from 'element-plus'
+import { FormRules, FormInstance } from 'element-plus'
 import emitter from '@/utils/emitter/emitter'
 import { register } from '@/http/api/auth'
 import { noticeSuccess } from '../../../utils/Notification/index'

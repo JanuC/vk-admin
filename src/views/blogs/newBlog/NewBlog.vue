@@ -470,7 +470,7 @@ const newTagFormRef = ref<FormInstance>()
  */
 const submitNewTagForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
-  await formEl.validate((valid, fields) => {
+  await formEl.validate((valid) => {
     if (valid) sendRequestToCreateTag()
   })
 }

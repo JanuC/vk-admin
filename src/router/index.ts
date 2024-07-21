@@ -9,9 +9,7 @@ const router = createRouter({
   routes,
 })
 
-const whiteList = ['/login']
-
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _, next) => {
   // 开启顶部进度条
   openProgress()
   const { user, routeStore } = useStore()

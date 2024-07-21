@@ -23,16 +23,6 @@
   </div>
 </template>
 
-<script lang="ts" setup name="Layout">
-import { useStore } from '../../store/index'
-const { user } = useStore()
-const { loadingStore } = useStore()
-// onMounted(() => {
-//   window.addEventListener('load', () => {
-//     // console.log(123)
-//     user.setIsAddRoutes(false)
-//   })
-// })
-</script>
+<script lang="ts" setup name="Layout"></script>
 
 <style lang="scss" scoped></style>

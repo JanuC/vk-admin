@@ -1,0 +1,218 @@
+<template>
+  <el-dialog
+    :model-value="permissionDialogData.isShow"
+    :close-on-click-modal="false"
+  >
+    <template #header>
+      <Title :title="computedTitle(permissionDialogData.type)" />
+    </template>
+    <el-form
+      ref="permFormRef"
+      :model="permForm"
+      label-width="auto"
+      v-cLoading="loadingStore.isLoading"
+      :rules="permFormRules"
+    >
+      <el-form-item label="权限名:" prop="name">
+        <el-input v-model="permForm.name" placeholder="请输入权限名"></el-input>
+      </el-form-item>
+      <el-form-item label="权限目录:" prop="isMenu">
+        <el-radio-group v-model="permForm.isMenu">
+          <el-radio :value="1">是</el-radio>
+          <el-radio :value="0">否</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      <el-form-item label="父级目录:" prop="parentId">
+        <el-select v-model="permForm.parentId" placeholder="请选择权限目录">
+          <el-option
+            v-for="item in permMenu"
+            :key="item.id"
+            :value="item.id"
+            :label="item.name"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="枚举值" prop="enumVal">
+        <template #label>
+          <el-tooltip content="唯一且不可变">
+            <span class="flex items-center"
+              >枚举值<el-icon><i-ep-infoFilled /></el-icon>:</span
+            >
+          </el-tooltip>
+        </template>
+        <el-input
+          v-model="permForm.enumVal"
+          placeholder="请输入唯一枚举值"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="描述:" prop="desc">
+        <el-input type="textarea" placeholder="请输入描述"></el-input>
+      </el-form-item>
+      <el-form-item label="分配角色:" prop="roleIds">
+        <el-checkbox-group v-model="permForm.roleIds">
+          <el-checkbox
+            v-for="item in roleList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+            :disabled="Boolean(item.isTopRole)"
+          />
+        </el-checkbox-group>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <el-space v-if="permissionDialogData.type === 'detail'">
+        <el-button @click="handleClose(permFormRef)">关闭</el-button>
+        <el-button type="primary" @click="handleEdit">编辑</el-button>
+      </el-space>
+      <el-space v-else>
+        <el-button @click="handleClose(permFormRef)">取消</el-button>
+        <el-button type="primary" @click="handleConfirm(permFormRef)"
+          >确认</el-button
+        >
+      </el-space>
+    </template>
+  </el-dialog>
+</template>
+
+<script lang="ts" setup name="Perm-Dialog">
+import { ModelRef } from 'vue'
+import { FormInstance, FormRules } from 'element-plus'
+import { useStore } from '@/store/index'
+import { getAllRoles } from '@/http/api/role'
+import { noticeSuccess } from '@/utils/Notification/index'
+import { createNewPerm, getPermMenu } from '@/http/api/permission'
+
+const permissionDialogData = defineModel<PermDialogProps>(
+  'permissionDialogData'
+) as ModelRef<PermDialogProps>
+
+const emits = defineEmits(['updateData'])
+
+const { loadingStore } = useStore()
+
+// 根据不同的 type 计算不同的 title
+const computedTitle = computed(() => (type: string) => {
+  if (type == 'create') return '新建权限'
+  if (type == 'edit') return '编辑权限'
+  return '权限详情'
+})
+
+const permForm = ref<PermFormProps>({
+  name: '',
+  enumVal: '',
+  parentId: '',
+  desc: '',
+  isMenu: 0,
+  roleIds: [],
+})
+
+const permFormRules = ref<FormRules<PermFormProps>>({
+  name: [
+    { required: true, message: '权限名不能为空', trigger: ['change', 'blur'] },
+    {
+      min: 4,
+      max: 6,
+      message: '权限名为4 - 6 位',
+      trigger: ['change', 'blur'],
+    },
+  ],
+  isMenu: [
+    {
+      validator: (_: any, __: string, callback: any) => {
+        permFormRef.value?.validateField('parentId', () => {})
+        callback()
+      },
+      trigger: ['change', 'blur'],
+    },
+  ],
+  parentId: [
+    {
+      validator: (_: any, value: string, callback: any) => {
+        if (!Boolean(permForm.value.isMenu) && !value) {
+          callback(new Error('非目录项必须有父级目录'))
+        }
+        callback()
+      },
+      trigger: ['change', 'blur'],
+    },
+  ],
+  enumVal: [
+    {
+      required: true,
+      message: '权限枚举值不能为空',
+      trigger: ['change', 'blur'],
+    },
+  ],
+  roleIds: [
+    {
+      validator: (_: any, value: string, callback: any) => {
+        if (!value.length) callback(new Error('请至少选择一个角色'))
+        callback()
+      },
+      trigger: ['change', 'blur'],
+    },
+  ],
+})
+
+const permFormRef = ref<FormInstance>()
+
+const roleList = ref<RoleProps[]>([])
+
+const permMenu = ref<PermDataProps[]>([])
+
+const handleEdit = () => {}
+const handleClose = (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  formEl.resetFields()
+  permissionDialogData.value.isShow = false
+  permissionDialogData.value.id = ''
+}
+const handleConfirm = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  await formEl.validate((valid) => {
+    if (valid) createOrUpdatePerm()
+  })
+}
+
+const getAllRoleList = async () => {
+  const { data } = await getAllRoles()
+  roleList.value = data
+  // 将预设角色默认选中
+  data.forEach((role) => {
+    if (role.isTopRole) permForm.value.roleIds.push(role.id)
+  })
+}
+
+const createOrUpdatePerm = async () => {
+  const { id } = permissionDialogData.value
+  if (id) {
+    // await updateRouteById(id, { ...routeForm.value })
+    // noticeSuccess('更新路由成功')
+  } else {
+    await createNewPerm({ ...permForm.value })
+    noticeSuccess('新建权限成功')
+  }
+  handleClose(permFormRef.value)
+  emits('updateData')
+}
+
+const getPermMenuList = async () => {
+  const { data } = await getPermMenu()
+  permMenu.value = data
+}
+
+const getData = () => {
+  getAllRoleList()
+  getPermMenuList()
+}
+
+watch(
+  () => permissionDialogData.value.isShow,
+  (newVal) => {
+    if (newVal) getData()
+  }
+)
+</script>
+
+<style lang="scss" scoped></style>

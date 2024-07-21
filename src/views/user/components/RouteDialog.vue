@@ -207,13 +207,8 @@ import { getAllRoles } from '@/http/api/role'
 import _ from 'lodash'
 import * as Icons from '@element-plus/icons-vue'
 import { noticeSuccess } from '@/utils/Notification'
-import { getRoleById } from '../../../http/api/role'
-import { getRouteById, updateRouteById } from '../../../http/api/route'
-import {
-  createNewRoute,
-  getAllRoutes,
-  getRoutesIsParent,
-} from '@/http/api/route'
+import { getRouteById, updateRouteById } from '@/http/api/route'
+import { createNewRoute, getRoutesIsParent } from '@/http/api/route'
 
 import { useStore } from '@/store/index'
 
@@ -273,7 +268,7 @@ const routeFormRules = reactive<FormRules<RouteFormProps>>({
       trigger: ['change', 'blur'],
     },
     {
-      validator: (_: any, value: string, callback: any) => {
+      validator: (_: any, __: string, callback: any) => {
         // if (value) {
         routeFormRef.value?.validateField('icon', () => {})
         routeFormRef.value?.validateField('component', () => {})

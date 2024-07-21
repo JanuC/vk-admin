@@ -1,4 +1,4 @@
-import { App, Directive, DirectiveBinding, createApp } from 'vue'
+import { Directive, DirectiveBinding, createApp } from 'vue'
 import CustomLoading from '@/components/loading/CustomLoading.vue'
 
 const loadingDirective: Directive = {

@@ -191,15 +191,10 @@
 <script lang="ts" setup name="User-Dialog">
 import { ModelRef } from 'vue'
 import { FormInstance, FormRules } from 'element-plus'
-import { getAllRoles } from '../../../http/api/role'
-import { getUserById, createUser, updateUserById } from '../../../http/api/user'
-import { noticeSuccess } from '../../../utils/Notification/index'
-import {
-  provinceAndCityData,
-  regionData,
-  codeToText,
-  pcaTextArr,
-} from 'element-china-area-data'
+import { getAllRoles } from '@/http/api/role'
+import { getUserById, createUser, updateUserById } from '@/http/api/user'
+import { noticeSuccess } from '@/utils/Notification/index'
+import { pcaTextArr } from 'element-china-area-data'
 import { useStore } from '@/store/index'
 
 const userDialogData = defineModel<UserDialogProps>(
@@ -334,7 +329,7 @@ const getAllRolesList = async () => {
 
   allRoles.value = data
   // 将预设角色默认选中
-  data.forEach((role) => {
+  data.forEach((role: RoleProps) => {
     if (role.isCommon) userForm.roleIds.push(role.id)
   })
 }

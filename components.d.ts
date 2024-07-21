@@ -67,6 +67,7 @@ declare module 'vue' {
     Menu: typeof import('./src/components/menu/Menu.vue')['default']
     MenuTree: typeof import('./src/components/menu/components/MenuTree.vue')['default']
     NoData: typeof import('./src/components/no-data/NoData.vue')['default']
+    PermissionDialog: typeof import('./src/views/user/components/PermissionDialog.vue')['default']
     RegisterForm: typeof import('./src/views/login/components/RegisterForm.vue')['default']
     RoleDialog: typeof import('./src/views/user/components/RoleDialog.vue')['default']
     RouteDialog: typeof import('./src/views/user/components/RouteDialog.vue')['default']
@@ -76,8 +77,5 @@ declare module 'vue' {
     UploadImage: typeof import('./src/components/upload/UploadImage.vue')['default']
     UserDialog: typeof import('./src/views/user/components/UserDialog.vue')['default']
     UserInfo: typeof import('./src/components/header/components/UserInfo.vue')['default']
-  }
-  export interface ComponentCustomProperties {
-    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
   }
 }

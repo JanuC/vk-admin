@@ -106,15 +106,15 @@ import { useStore } from '../../store/index'
 
 let tableData = ref<RouteDataProps[]>([])
 
-const queryForm = ref<QueryRouteProps>({
-  current: 1,
-  pageSize: 10,
-  title: '',
-})
+// const queryForm = ref<QueryRouteProps>({
+//   current: 1,
+//   pageSize: 10,
+//   title: '',
+// })
 
 const { loadingStore } = useStore()
 
-const total = ref<number>(0)
+// const total = ref<number>(0)
 
 const routeDialogData = ref<RouteDialogProps>({
   type: 'create',
@@ -128,10 +128,10 @@ const handleCreate = () => {
 }
 
 // 切换分页大小
-const handleSizeChange = () => {}
+// const handleSizeChange = () => {}
 
 // 切换分页
-const handleCurrentChange = () => {}
+// const handleCurrentChange = () => {}
 
 // 当前展开行的 id
 const expandRowsId = ref<string[]>([])

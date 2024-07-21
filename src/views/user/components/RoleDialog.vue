@@ -55,9 +55,9 @@
 <script lang="ts" setup name="Role-Dialog">
 import { ModelRef } from 'vue'
 import { FormInstance, FormRules } from 'element-plus'
-import { createNewRole, getRoleById, updateRole } from '../../../http/api/role'
-import { noticeSuccess } from '../../../utils/Notification/index'
-import { useStore } from '../../../store/index'
+import { createNewRole, getRoleById, updateRole } from '@/http/api/role'
+import { noticeSuccess } from '@/utils/Notification/index'
+import { useStore } from '@/store/index'
 const roleDialogData = defineModel<RoleDialogProps>(
   'roleDialogData'
 ) as ModelRef<RoleDialogProps>

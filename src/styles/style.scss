@@ -14,3 +14,12 @@ body,
 div {
   box-sizing: border-box;
 }
+
+.el-table__inner-wrapper::before {
+  display: none;
+}
+
+.el-card__footer {
+  padding-bottom: 0 !important;
+  // padding-top: 0 !important;
+}

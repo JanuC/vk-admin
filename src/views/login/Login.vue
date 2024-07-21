@@ -17,10 +17,6 @@
 import LoginForm from './components/LoginForm.vue'
 import RegisterForm from './components/RegisterForm.vue'
 import emitter from '@/utils/emitter/emitter'
-import { useStore } from '../../store/index'
-import { ComponentInternalInstance } from 'vue'
-
-const { user, routeStore } = useStore()
 
 // 当前展示的 form
 const showForm = ref<string>('loginForm')

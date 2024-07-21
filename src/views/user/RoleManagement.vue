@@ -1,12 +1,14 @@
 <template>
   <div class="user-manamgement w-full h-full flex flex-col">
     <el-card shadow="never" class="mb-[0.4rem] !border-none">
-      <el-space>
-        <el-button type="primary" @click="handleCreate">新建角色</el-button>
-        <el-button type="danger" :disabled="!selectedRows.length"
-          >禁用选中</el-button
-        >
-        <span class="font-medium">筛选:</span>
+      <el-space class="w-full flex justify-between">
+        <div>
+          <el-button type="primary" @click="handleCreate">新建角色</el-button>
+          <el-button type="danger" :disabled="!selectedRows.length"
+            >禁用选中</el-button
+          >
+        </div>
+        <!-- <span class="font-medium">筛选:</span> -->
         <el-form
           inline
           class="h-[3.2rem]"

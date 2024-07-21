@@ -57,7 +57,7 @@
 </template>
 
 <script lang="ts" setup name="LoginForm">
-import { FormInstance, FormRules, ElNotification } from 'element-plus'
+import { FormInstance, FormRules } from 'element-plus'
 import emitter from '@/utils/emitter/emitter'
 import { login } from '@/http/api/auth'
 import router from '@/router'
