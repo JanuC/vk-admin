@@ -8,7 +8,7 @@
         >
         <template v-else>
           <el-button type="success" @click="handleConfirmSort">更新</el-button>
-          <el-button @click="getData">取消</el-button>
+          <el-button @click="handleCancel">取消</el-button>
         </template>
       </el-space>
     </el-card>
@@ -68,7 +68,7 @@
               </el-tooltip>
               <el-popconfirm
                 v-else
-                title="删除后路由后将不可恢复, 确定删除吗?"
+                title="删除路由后将不可恢复, 确定删除吗?"
                 width="20rem"
                 @confirm="handleDelete(row.id)"
                 @cancel="messageInfo('已取消操作')"
@@ -172,6 +172,12 @@ const handleConfirmSort = async () => {
   noticeSuccess('更新排序成功')
   getData()
 }
+
+const handleCancel = () => {
+  isSort.value = false
+  getData()
+}
+
 // 初始化 sortable
 const initSortable = () => {
   if (!isSort.value) {

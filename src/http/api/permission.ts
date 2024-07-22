@@ -24,3 +24,35 @@ export const createNewPerm = (data: PermFormProps) => {
     data,
   })
 }
+
+export const getPermById = (
+  id: string
+): Promise<ResponseProps<PermDataProps & { roleIds: string[] }>> => {
+  return request({
+    method: 'GET',
+    url: `/permission/${id}`,
+  })
+}
+
+export const updatePermById = (id: string, data: PermFormProps) => {
+  return request({
+    method: 'PATCH',
+    url: `/permission/${id}`,
+    data,
+  })
+}
+
+export const delPermById = (id: string) => {
+  return request({
+    method: 'DELETE',
+    url: `/permission/${id}`,
+  })
+}
+
+export const updatePermOrder = (data: OrderProps[]) => {
+  return request({
+    method: 'PATCH',
+    url: '/route/list/order',
+    data,
+  })
+}

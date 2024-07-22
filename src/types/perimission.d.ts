@@ -7,6 +7,8 @@ type PermDataProps = {
   isMenu: number
   desc: string | null
   childrem: PermDataProps[]
+  roles: RoleProps[]
+  order: number
   createBy: string
   createTime: Date
 }

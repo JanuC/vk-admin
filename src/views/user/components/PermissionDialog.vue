@@ -6,7 +6,13 @@
     <template #header>
       <Title :title="computedTitle(permissionDialogData.type)" />
     </template>
+    <el-descriptions v-if="permissionDialogData.type === 'detail'">
+      <el-descriptions-item label="权限名">{{
+        permDetail?.name
+      }}</el-descriptions-item>
+    </el-descriptions>
     <el-form
+      v-else
       ref="permFormRef"
       :model="permForm"
       label-width="auto"
@@ -46,7 +52,11 @@
         ></el-input>
       </el-form-item>
       <el-form-item label="描述:" prop="desc">
-        <el-input type="textarea" placeholder="请输入描述"></el-input>
+        <el-input
+          type="textarea"
+          placeholder="请输入描述"
+          v-model="permForm.desc"
+        ></el-input>
       </el-form-item>
       <el-form-item label="分配角色:" prop="roleIds">
         <el-checkbox-group v-model="permForm.roleIds">
@@ -81,7 +91,12 @@ import { FormInstance, FormRules } from 'element-plus'
 import { useStore } from '@/store/index'
 import { getAllRoles } from '@/http/api/role'
 import { noticeSuccess } from '@/utils/Notification/index'
-import { createNewPerm, getPermMenu } from '@/http/api/permission'
+import {
+  createNewPerm,
+  getPermById,
+  getPermMenu,
+  updatePermById,
+} from '@/http/api/permission'
 
 const permissionDialogData = defineModel<PermDialogProps>(
   'permissionDialogData'
@@ -157,16 +172,24 @@ const permFormRules = ref<FormRules<PermFormProps>>({
 
 const permFormRef = ref<FormInstance>()
 
+const permDetail = ref<PermDataProps>()
+
 const roleList = ref<RoleProps[]>([])
 
 const permMenu = ref<PermDataProps[]>([])
 
-const handleEdit = () => {}
+const handleEdit = () => {
+  permissionDialogData.value.type = 'edit'
+  permissionDialogData.value.id = permDetail!.value!.id
+  getTargetPermById(permDetail!.value!.id)
+}
 const handleClose = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  formEl.resetFields()
+  if (permissionDialogData.value.type !== 'detail') {
+    if (!formEl) return
+    formEl.resetFields()
+    permissionDialogData.value.id = ''
+  }
   permissionDialogData.value.isShow = false
-  permissionDialogData.value.id = ''
 }
 const handleConfirm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
@@ -180,15 +203,32 @@ const getAllRoleList = async () => {
   roleList.value = data
   // 将预设角色默认选中
   data.forEach((role) => {
-    if (role.isTopRole) permForm.value.roleIds.push(role.id)
+    if (role.isTopRole && !permForm.value.roleIds.includes(role.id))
+      permForm.value.roleIds.push(role.id)
   })
+}
+
+// 监听是否传递过来id
+watch(
+  () => permissionDialogData.value.id,
+  (id) => {
+    if (id) getTargetPermById(id)
+  }
+)
+
+const getTargetPermById = async (id: string) => {
+  const { data } = await getPermById(id)
+  permDetail.value = data
+  const { name, roleIds, enumVal, desc, isMenu, parentId } = data
+  permForm.value = { name, roleIds, enumVal, desc, isMenu, parentId }
 }
 
 const createOrUpdatePerm = async () => {
   const { id } = permissionDialogData.value
   if (id) {
-    // await updateRouteById(id, { ...routeForm.value })
-    // noticeSuccess('更新路由成功')
+    await updatePermById(id, { ...permForm.value })
+    noticeSuccess('更新权限成功')
+    handleClose(permFormRef.value)
   } else {
     await createNewPerm({ ...permForm.value })
     noticeSuccess('新建权限成功')

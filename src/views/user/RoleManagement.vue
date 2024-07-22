@@ -60,12 +60,7 @@
               {{ formatDate(row.createTime) }}
             </template>
           </el-table-column>
-          <el-table-column
-            label="操作"
-            min-width="100"
-            align="center"
-            fixed="right"
-          >
+          <el-table-column label="操作" align="center">
             <template #default="{ row }">
               <el-button link type="primary" @click="handleEdit(row.id)"
                 >编辑</el-button
