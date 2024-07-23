@@ -36,7 +36,7 @@ export const getRoutesIsParent = (): Promise<
 
 export const getRouteById = (
   id: string
-): Promise<ResponseProps<RouteFormProps>> => {
+): Promise<ResponseProps<RouteDataProps>> => {
   return request({
     method: 'GET',
     url: `/route/${id}`,

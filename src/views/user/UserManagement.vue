@@ -132,14 +132,14 @@
       </template>
       <template #footer>
         <div class="flex justify-around">
-          <el-pagination
+          <!-- <el-pagination
             class="text-center"
             v-model:current-page="queryForm.current"
             v-model:page-size="queryForm.pageSize"
             :page-sizes="[10, 20, 50, 100]"
             layout="total, sizes, prev, pager, next, jumper"
             :total="total"
-          />
+          /> -->
         </div>
       </template>
     </el-card>
@@ -151,7 +151,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getUserList, getUserListCount } from '@/http/api/user'
+import { getUserList } from '@/http/api/user'
 import { formatDate } from '../../utils/formatDate/index'
 import { FormInstance } from 'element-plus'
 // import UserDialog from './components/UserDialog.vue'
@@ -178,14 +178,9 @@ const queryFormRef = ref<FormInstance>()
 const getList = async () => {
   const { data } = await getUserList({ ...queryForm.value })
 
-  tableData.value = data
-}
-
-// 获取符合条件的数据长度
-const getListCount = async () => {
-  const { data } = await getUserListCount({ ...queryForm.value })
-
-  total.value = data
+  const { records, totalCount } = data
+  tableData.value = records
+  total.value = totalCount
 }
 
 // 点击查询按钮
@@ -210,7 +205,6 @@ const handleSelectionChange = (rows: UserProps[]) => {
 // 获取 table 数据
 const getTableData = () => {
   getList()
-  getListCount()
 }
 
 const userDialogData = reactive<UserDialogProps>({
@@ -234,10 +228,9 @@ const handleEdit = (id: string) => {
 
 // 用户详情按钮
 const handleDetail = (id: string) => {
-  userDialogData.isShow = true
   userDialogData.type = 'detail'
-
   userDialogData.id = id
+  userDialogData.isShow = true
 }
 
 // 删除用户

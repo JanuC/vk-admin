@@ -8,7 +8,18 @@
     <template #header>
       <Title :title="computedTitle(routeDialogData.type)" />
     </template>
+    <el-descriptions
+      v-if="routeDialogData.type === 'detail'"
+      v-cLoading="loadingStore.isLoading"
+      :column="1"
+      border
+    >
+      <el-descriptions-item label="权限id:" label-class-name="w-[10rem]">{{
+        routeDetail?.id
+      }}</el-descriptions-item>
+    </el-descriptions>
     <el-form
+      v-else
       ref="routeFormRef"
       :model="routeForm"
       label-width="auto"
@@ -357,7 +368,8 @@ const getAllRoleList = async () => {
   roleList.value = data
   // 将预设角色默认选中
   data.forEach((role) => {
-    if (role.isTopRole) routeForm.value.roleIds.push(role.id)
+    if (role.isTopRole && !routeForm.value.roleIds.includes(role.id))
+      routeForm.value.roleIds.push(role.id)
   })
 }
 
@@ -368,14 +380,20 @@ const getParentRoutes = async () => {
   parentRoute.value = data
 }
 
-const handleEdit = () => {}
+const handleEdit = () => {
+  routeDialogData.value.type = 'edit'
+  routeDialogData.value.id = routeDetail!.value!.id
+  getTargetRoute(routeDetail!.value!.id)
+}
 
 // 点击关闭
 const handleClose = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  formEl.resetFields()
-  routeDialogData.value.isShow = false
+  if (routeDialogData.value.type !== 'detail') {
+    if (!formEl) return
+    formEl.resetFields()
+  }
   routeDialogData.value.id = ''
+  routeDialogData.value.isShow = false
 }
 
 // 提交表单
@@ -394,10 +412,22 @@ watch(
 )
 
 // 获取目标路由
+const routeDetail = ref<RouteDataProps>()
 const getTargetRoute = async (id: string) => {
   const { data } = await getRouteById(id)
+  console.log(data)
 
-  routeForm.value = data
+  routeDetail.value = data
+  const { path, title, component, icon, parentId, isTopRoute, roleIds } = data
+  routeForm.value = {
+    path,
+    title,
+    component,
+    icon,
+    isTopRoute,
+    parentId: parentId ? parentId : '',
+    roleIds,
+  }
 }
 
 //创建或者更新路由

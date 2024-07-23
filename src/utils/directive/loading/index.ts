@@ -16,8 +16,6 @@ const loadingDirective: Directive = {
     binding.value ? appendEl(el) : removeEl(el)
   },
   unmounted(el: HTMLElement & { instance: any }) {
-    console.log(el)
-
     if (el.instance) {
       removeEl(el)
       el.instance = null

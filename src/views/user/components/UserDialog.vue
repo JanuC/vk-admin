@@ -8,7 +8,70 @@
       <template #header>
         <Title :title="computedTitle(userDialogData.type)" />
       </template>
+      <el-descriptions
+        v-if="userDialogData.type === 'detail' && userDetail"
+        v-cLoading="loadingStore.isLoading"
+        :column="3"
+        border
+      >
+        <el-descriptions-item
+          label="用户id:"
+          label-class-name="w-[10rem]"
+          :span="2"
+          >{{ userDetail.id }}</el-descriptions-item
+        >
+        <el-descriptions-item label="用户名:" label-class-name="w-[10rem]">{{
+          userDetail.username
+        }}</el-descriptions-item>
+        <el-descriptions-item label="昵称:">{{
+          userDetail.nickName
+        }}</el-descriptions-item>
+        <el-descriptions-item label="电话:" label-class-name="w-[10rem]">{{
+          userDetail.phone ? userDetail.phone : '-'
+        }}</el-descriptions-item>
+        <el-descriptions-item label="邮箱:">{{
+          userDetail.email ? userDetail.email : '-'
+        }}</el-descriptions-item>
+        <el-descriptions-item label="地址:" :span="3">{{
+          userDetail.area ? userDetail.area.join('') : '-'
+        }}</el-descriptions-item>
+        <el-descriptions-item label="头像:">
+          <el-avatar
+            :src="userDetail.avatar"
+            :size="20"
+            shape="square"
+          ></el-avatar>
+        </el-descriptions-item>
+
+        <el-descriptions-item label="预设用户:">
+          <el-tag :type="userDetail.isDefault ? 'success' : 'danger'">{{
+            userDetail.isDefault ? '是' : '否'
+          }}</el-tag>
+        </el-descriptions-item>
+        <el-descriptions-item label="状态:">
+          <el-tag :type="userDetail.isEnable ? 'success' : 'danger'">{{
+            userDetail.isEnable ? '启用' : '禁用'
+          }}</el-tag>
+        </el-descriptions-item>
+        <el-descriptions-item label="用户角色:" :span="3">
+          <el-space>
+            <el-tag
+              type="primary"
+              v-for="item in userDetail.roles"
+              :key="item.id"
+              >{{ item.name }}</el-tag
+            >
+          </el-space>
+        </el-descriptions-item>
+        <el-descriptions-item label="创建时间:" :span="3">
+          {{ formatDate(userDetail.createTime) }}
+        </el-descriptions-item>
+        <el-descriptions-item label="更新时间:" :span="3">
+          {{ formatDate(userDetail.updateTime) }}
+        </el-descriptions-item>
+      </el-descriptions>
       <el-form
+        v-else
         :model="userForm"
         class="mt-[1rem]"
         label-width="auto"
@@ -196,6 +259,7 @@ import { getUserById, createUser, updateUserById } from '@/http/api/user'
 import { noticeSuccess } from '@/utils/Notification/index'
 import { pcaTextArr } from 'element-china-area-data'
 import { useStore } from '@/store/index'
+import { formatDate } from '@/utils/formatDate'
 
 const userDialogData = defineModel<UserDialogProps>(
   'userDialogData'
@@ -307,26 +371,28 @@ const computedTitle = computed(() => (type: string) => {
 // 编辑按钮
 const handleEdit = () => {
   userDialogData.value.type = 'edit'
+  userDialogData.value.id = userDetail.value!.id
+  getTargetUser(userDetail.value!.id)
 }
 
 // 关闭 dialog
 const handleClose = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  formEl.resetFields()
-  userDialogData.value.isShow = false
+  if (userDialogData.value.type !== 'detail') {
+    if (!formEl) return
+    formEl.resetFields()
+  }
   userDialogData.value.id = ''
+  userDialogData.value.isShow = false
 }
 
 // 获取 dialog 所需数据
 const getData = () => {
-  getAllRolesList()
+  if (userDialogData.value.isShow) getAllRolesList()
 }
 
 // 获取所有角色
 const getAllRolesList = async () => {
   const { data } = await getAllRoles()
-  // console.log(data)
-
   allRoles.value = data
   // 将预设角色默认选中
   data.forEach((role: RoleProps) => {
@@ -350,9 +416,11 @@ watch(
 )
 
 // 获取目标用户信息
+const userDetail = ref<UserProps>()
 const getTargetUser = async (id: string) => {
   const { data } = await getUserById(id)
 
+  userDetail.value = data
   const {
     username,
     nickName,

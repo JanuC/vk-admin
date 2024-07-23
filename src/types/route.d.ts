@@ -8,6 +8,9 @@ interface RouteDataProps {
   name: string
   parentId: string | null
   order: number
+  roleIds: string[]
+  roles: RoleProps[]
+  isTopRoute: 0 | 1
   createTime: Date
   updateTime: Date
 }

@@ -54,7 +54,7 @@
               <el-button link type="primary" @click="handleEdit(row.id)"
                 >编辑</el-button
               >
-              <el-button link>详情</el-button>
+              <el-button link @click="handleDetail(row.id)">详情</el-button>
               <el-tooltip
                 content="具有子路由的路由不可删除"
                 v-if="row.children.length"
@@ -261,6 +261,13 @@ const handleDelete = async (id: string) => {
   await deleteRouteById(id)
   noticeSuccess('删除路由成功')
   getData()
+}
+
+// 路由详情按钮
+const handleDetail = (id: string) => {
+  routeDialogData.value.type = 'detail'
+  routeDialogData.value.id = id
+  routeDialogData.value.isShow = true
 }
 
 onMounted(() => {

@@ -24,8 +24,8 @@ const showLoading = () => {
   if (requestCount === 0 && !loadingStore.isLoading) {
     startTime = Date.now()
     loadingStore.setIsLoading(true)
+    requestCount++
   }
-  requestCount++
 }
 
 const computedTime = (endTime: number) => {
@@ -65,8 +65,8 @@ const toHideLoading = _.debounce(() => {
 // 全局请求拦截
 request.interceptors.request.use(
   (req) => {
-    // // loadingStore.add
     showLoading()
+
     const { user } = useStore()
     const accessToken = user.accessToken
     if (accessToken) {

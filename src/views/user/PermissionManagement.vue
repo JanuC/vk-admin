@@ -67,7 +67,13 @@
             </template>
             <template #default="{ row }">{{ row.enumVal }}</template>
           </el-table-column>
-          <el-table-column label="描述" prop="desc">
+          <el-table-column
+            label="描述"
+            prop="desc"
+            :show-overflow-tooltip="{
+              'popper-class': 'w-[30rem] max-h-[20rem] ',
+            }"
+          >
             <template #default="{ row }">{{
               row.desc ? row.desc : '-'
             }}</template>

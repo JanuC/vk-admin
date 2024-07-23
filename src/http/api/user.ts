@@ -2,7 +2,7 @@ import request from '..'
 
 export const getUserList = (
   params: QueryFormProps
-): Promise<ResponseProps<UserProps[]>> => {
+): Promise<ResponseProps<{ records: UserProps[]; totalCount: number }>> => {
   return request({
     method: 'GET',
     url: '/user/list',
@@ -10,15 +10,15 @@ export const getUserList = (
   })
 }
 
-export const getUserListCount = (
-  params: QueryFormProps
-): Promise<ResponseProps<number>> => {
-  return request({
-    method: 'GET',
-    url: '/user/list/count',
-    params,
-  })
-}
+// export const getUserListCount = (
+//   params: QueryFormProps
+// ): Promise<ResponseProps<number>> => {
+//   return request({
+//     method: 'GET',
+//     url: '/user/list/count',
+//     params,
+//   })
+// }
 
 export const getUserById = (id: string): Promise<ResponseProps<UserProps>> => {
   return request({

@@ -6,9 +6,39 @@
     <template #header>
       <Title :title="computedTitle(permissionDialogData.type)" />
     </template>
-    <el-descriptions v-if="permissionDialogData.type === 'detail'">
-      <el-descriptions-item label="权限名">{{
+    <el-descriptions
+      v-if="permissionDialogData.type === 'detail' && permDetail"
+      v-cLoading="loadingStore.isLoading"
+      :column="1"
+      border
+    >
+      <el-descriptions-item label="权限id:" label-class-name="w-[10rem]">{{
+        permDetail?.id
+      }}</el-descriptions-item>
+      <el-descriptions-item label="权限名:">{{
         permDetail?.name
+      }}</el-descriptions-item>
+      <el-descriptions-item label="枚举值:">{{
+        permDetail?.enumVal
+      }}</el-descriptions-item>
+      <el-descriptions-item label="创建者:">{{
+        permDetail?.createBy
+      }}</el-descriptions-item>
+      <el-descriptions-item label="描述:">{{
+        permDetail?.desc ? permDetail?.desc : '-'
+      }}</el-descriptions-item>
+      <el-descriptions-item label="所属角色:">
+        <el-space>
+          <el-tag v-for="item in permDetail.roles" :key="item.id">{{
+            item.name
+          }}</el-tag>
+        </el-space>
+      </el-descriptions-item>
+      <el-descriptions-item label="创建时间:">{{
+        formatDate(permDetail!.createTime)
+      }}</el-descriptions-item>
+      <el-descriptions-item label="更新时间:">{{
+        formatDate(permDetail!.updateTime)
       }}</el-descriptions-item>
     </el-descriptions>
     <el-form
@@ -56,6 +86,8 @@
           type="textarea"
           placeholder="请输入描述"
           v-model="permForm.desc"
+          maxlength="100"
+          show-word-limit
         ></el-input>
       </el-form-item>
       <el-form-item label="分配角色:" prop="roleIds">
@@ -97,6 +129,7 @@ import {
   getPermMenu,
   updatePermById,
 } from '@/http/api/permission'
+import { formatDate } from '@/utils/formatDate'
 
 const permissionDialogData = defineModel<PermDialogProps>(
   'permissionDialogData'
@@ -187,8 +220,8 @@ const handleClose = (formEl: FormInstance | undefined) => {
   if (permissionDialogData.value.type !== 'detail') {
     if (!formEl) return
     formEl.resetFields()
-    permissionDialogData.value.id = ''
   }
+  permissionDialogData.value.id = ''
   permissionDialogData.value.isShow = false
 }
 const handleConfirm = async (formEl: FormInstance | undefined) => {
@@ -218,6 +251,7 @@ watch(
 
 const getTargetPermById = async (id: string) => {
   const { data } = await getPermById(id)
+
   permDetail.value = data
   const { name, roleIds, enumVal, desc, isMenu, parentId } = data
   permForm.value = { name, roleIds, enumVal, desc, isMenu, parentId }

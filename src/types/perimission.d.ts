@@ -11,6 +11,7 @@ type PermDataProps = {
   order: number
   createBy: string
   createTime: Date
+  updateTime: Date
 }
 
 type PermDialogProps = {
