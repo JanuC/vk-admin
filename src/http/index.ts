@@ -107,7 +107,6 @@ request.interceptors.response.use(
 
       if (url === '/auth/refresh') {
         await computedTime(Date.now())
-        console.log('所有token都已失效')
         noticeError(message)
 
         router.push('/login')
@@ -142,6 +141,7 @@ request.interceptors.response.use(
           }
         } else {
           requestCount = 0
+          await computedTime(Date.now())
           return new Promise((resolve) => {
             requests.push((token: string) => {
               // 保存当前请求的 config

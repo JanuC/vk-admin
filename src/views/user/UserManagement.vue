@@ -4,22 +4,12 @@
       <el-space class="w-full flex justify-between">
         <div>
           <el-button type="primary" @click="handleCreate">新建用户</el-button>
-          <el-button type="danger" :disabled="!selectedRows.length"
-            >禁用选中</el-button
-          >
+          <el-button type="danger" :disabled="!selectedRows.length">禁用选中</el-button>
         </div>
         <!-- <span class="font-medium">筛选:</span> -->
-        <el-form
-          inline
-          class="h-[3.2rem]"
-          :model="queryForm"
-          ref="queryFormRef"
-        >
+        <el-form inline class="h-[3.2rem]" :model="queryForm" ref="queryFormRef">
           <el-form-item label="用户名:" prop="username">
-            <el-input
-              placeholder="请输入用户名"
-              v-model="queryForm.username"
-            ></el-input>
+            <el-input placeholder="请输入用户名" v-model="queryForm.username"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="handleFilter">查询</el-button>
@@ -28,23 +18,10 @@
         </el-form>
       </el-space>
     </el-card>
-    <el-card
-      shadow="never"
-      class="flex-1 !border-none flex flex-col"
-      body-class=" flex-1  min-h-0"
-    >
+    <el-card shadow="never" class="flex-1 !border-none flex flex-col" body-class=" flex-1  min-h-0">
       <template #default>
-        <el-table
-          height="100%"
-          :data="tableData"
-          v-cLoading="loadingStore.isLoading && !userDialogData.isShow"
-          @selection-change="handleSelectionChange"
-        >
-          <el-table-column
-            type="selection"
-            width="55"
-            :selectable="(row: UserProps) => Boolean(!row.isDefault)"
-          />
+        <el-table height="100%" :data="tableData" v-cLoading="loadingStore.isLoading && !userDialogData.isShow" @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55" :selectable="(row: UserProps) => Boolean(!row.isDefault)" />
           <el-table-column label="用户名" prop="username"></el-table-column>
           <el-table-column label="昵称" prop="nickName"></el-table-column>
           <el-table-column label="角色数" align="center">
@@ -58,67 +35,29 @@
               {{ formatDate(row.createTime) }}
             </template>
           </el-table-column>
-          <el-table-column
-            label="操作"
-            min-width="100"
-            align="center"
-            fixed="right"
-          >
+          <el-table-column label="操作" min-width="100" align="center" fixed="right">
             <template #default="{ row }">
-              <el-button link type="primary" @click="handleEdit(row.id)"
-                >编辑</el-button
-              >
+              <el-button link type="primary" @click="handleEdit(row.id)">编辑</el-button>
               <el-button link @click="handleDetail(row.id)">详情</el-button>
-              <el-tooltip
-                content="预设用户不能禁用"
-                v-if="Boolean(row.isDefault)"
-              >
-                <el-button
-                  link
-                  type="warning"
-                  :disabled="Boolean(row.isDefault)"
-                  >禁用</el-button
-                >
+              <el-tooltip content="预设用户不能禁用" v-if="Boolean(row.isDefault)">
+                <el-button link type="warning" :disabled="Boolean(row.isDefault)">禁用</el-button>
               </el-tooltip>
               <template v-else>
-                <el-popconfirm
-                  v-if="Boolean(row.isEnable)"
-                  title="禁用后该用户将不能登录, 确定禁用吗?"
-                  width="20rem"
-                  @confirm="handleChang(row.id, 0)"
-                  @cancel="messageInfo('已取消操作')"
-                >
+                <el-popconfirm v-if="Boolean(row.isEnable)" title="禁用后该用户将不能登录, 确定禁用吗?" width="20rem" @confirm="handleChang(row.id, 0)" @cancel="messageInfo('已取消操作')">
                   <template #reference>
                     <el-button type="danger" link>禁用</el-button>
                   </template>
                 </el-popconfirm>
-                <el-popconfirm
-                  v-else="!row.isEnable"
-                  title="启用后该用户将恢复正常, 确定禁启用吗?"
-                  width="20rem"
-                  @confirm="handleChang(row.id, 1)"
-                  @cancel="messageInfo('已取消操作')"
-                >
+                <el-popconfirm v-else="!row.isEnable" title="启用后该用户将恢复正常, 确定禁启用吗?" width="20rem" @confirm="handleChang(row.id, 1)" @cancel="messageInfo('已取消操作')">
                   <template #reference>
                     <el-button type="success" link>启用</el-button>
                   </template>
                 </el-popconfirm>
               </template>
-              <el-tooltip
-                content="预设用户不能删除"
-                v-if="Boolean(row.isDefault)"
-              >
-                <el-button link type="danger" :disabled="Boolean(row.isDefault)"
-                  >删除</el-button
-                >
+              <el-tooltip content="预设用户不能删除" v-if="Boolean(row.isDefault)">
+                <el-button link type="danger" :disabled="Boolean(row.isDefault)">删除</el-button>
               </el-tooltip>
-              <el-popconfirm
-                v-else
-                title="删除用户后将不可找回, 确定删除吗?"
-                width="20rem"
-                @confirm="handleDelete(row.id)"
-                @cancel="messageInfo('已取消操作')"
-              >
+              <el-popconfirm v-else title="删除用户后将不可找回, 确定删除吗?" width="20rem" @confirm="handleDelete(row.id)" @cancel="messageInfo('已取消操作')">
                 <template #reference>
                   <el-button type="danger" link>删除</el-button>
                 </template>
@@ -144,10 +83,7 @@
       </template>
     </el-card>
   </div>
-  <UserDialog
-    v-model:userDialogData="userDialogData"
-    @getNewData="getTableData"
-  />
+  <UserDialog v-model:userDialogData="userDialogData" @getNewData="getTableData" />
 </template>
 
 <script lang="ts" setup>

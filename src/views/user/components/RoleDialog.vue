@@ -1,41 +1,36 @@
 <template>
-  <el-dialog
-    :model-value="roleDialogData.isShow"
-    :close-on-click-modal="false"
-    @close="handleClose(roleFormRef)"
-  >
+  <el-dialog :model-value="roleDialogData.isShow" :close-on-click-modal="false" @close="handleClose(roleFormRef)">
     <template #header>
       <Title :title="computedTitle(roleDialogData.type)" />
     </template>
-    <el-form
-      :model="roleForm"
-      label-width="auto"
-      inline
-      :rules="roleFormRules"
-      ref="roleFormRef"
-      v-cLoading="loadingStore.isLoading"
-    >
-      <el-form-item label="角色名:" prop="name">
-        <el-input v-model="roleForm.name" placeholder="请输入角色名"></el-input>
-      </el-form-item>
-      <el-form-item prop="enumVal">
-        <template #label>
-          <el-tooltip content="枚举值, 唯一且创建之后不可修改">
-            <div class="flex items-center">枚举值<i-ep-infoFilled />:</div>
-          </el-tooltip>
-        </template>
-        <el-input
-          v-model="roleForm.enumVal"
-          placeholder="请输入枚举值"
-          :disabled="roleDialogData.type !== 'create'"
-        ></el-input>
-      </el-form-item>
-      <!-- <el-form-item label="是否为预设角色:">
-        <el-radio-group v-model="roleForm.isDefault">
-          <el-radio :value="1">是</el-radio>
-          <el-radio :value="0">否</el-radio>
-        </el-radio-group>
-      </el-form-item> -->
+    <el-form :model="roleForm" label-width="auto" :rules="roleFormRules" ref="roleFormRef" v-cLoading="loadingStore.isLoading">
+      <el-row justify="space-between">
+        <el-col :span="10">
+          <el-form-item label="角色名:" prop="name">
+            <el-input v-model="roleForm.name" placeholder="请输入角色名"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="10">
+          <el-form-item prop="enumVal">
+            <template #label>
+              <el-tooltip content="枚举值, 唯一且创建之后不可修改">
+                <div class="flex items-center">枚举值<i-ep-infoFilled />:</div>
+              </el-tooltip>
+            </template>
+            <el-input v-model="roleForm.enumVal" placeholder="请输入枚举值" :disabled="roleDialogData.type !== 'create'"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row justify="space-between">
+        <el-col :span="10">
+          <el-form-item label="分配权限:">
+            <tree :data="allPerms" :props="{ children: 'children', label: 'name' }" show-checkbox default-expand-all></tree>
+          </el-form-item>
+        </el-col>
+        <el-col :span="10">
+          <el-form-item label="分配路由:"></el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <template #footer>
       <el-space v-if="roleDialogData.type === 'detail'">
@@ -44,9 +39,7 @@
       </el-space>
       <el-space v-else>
         <el-button @click="handleClose(roleFormRef)">取消</el-button>
-        <el-button type="primary" @click="handleConfirm(roleFormRef)"
-          >确认</el-button
-        >
+        <el-button type="primary" @click="handleConfirm(roleFormRef)">确认</el-button>
       </el-space>
     </template>
   </el-dialog>
@@ -58,9 +51,8 @@ import { FormInstance, FormRules } from 'element-plus'
 import { createNewRole, getRoleById, updateRole } from '@/http/api/role'
 import { noticeSuccess } from '@/utils/Notification/index'
 import { useStore } from '@/store/index'
-const roleDialogData = defineModel<RoleDialogProps>(
-  'roleDialogData'
-) as ModelRef<RoleDialogProps>
+import { getAllPermList } from '@/http/api/permission'
+const roleDialogData = defineModel<RoleDialogProps>('roleDialogData') as ModelRef<RoleDialogProps>
 
 const { loadingStore } = useStore()
 
@@ -75,12 +67,8 @@ const roleForm = ref<RoleDialogFormProps>({
 })
 
 const roleFormRules = reactive<FormRules<RoleProps>>({
-  name: [
-    { required: true, message: '角色名不能为空', trigger: ['change', 'blur'] },
-  ],
-  enumVal: [
-    { required: true, message: '枚举值不能为空', trigger: ['change', 'blur'] },
-  ],
+  name: [{ required: true, message: '角色名不能为空', trigger: ['change', 'blur'] }],
+  enumVal: [{ required: true, message: '枚举值不能为空', trigger: ['change', 'blur'] }],
 })
 
 // 根据不同的 type 计算不同的 title
@@ -128,6 +116,22 @@ const createOrUpdateRole = async () => {
   }
   handleClose(roleFormRef.value)
 }
+
+const allPerms = ref<PermDataProps[]>([])
+const getAllPerms = async () => {
+  const { data } = await getAllPermList()
+  console.log(data)
+  allPerms.value = data
+}
+
+watch(
+  () => roleDialogData.value.isShow,
+  (newVal) => {
+    if (newVal) {
+      getAllPerms()
+    }
+  }
+)
 
 watch(
   () => roleDialogData.value.id,

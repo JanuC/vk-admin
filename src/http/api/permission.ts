@@ -1,12 +1,17 @@
 import request from '..'
 
-export const getPermListByFilter = (
-  params: QueryPermFormProps
-): Promise<ResponseProps<PermDataProps[]>> => {
+export const getPermListByFilter = (params: QueryPermFormProps): Promise<ResponseProps<PermDataProps[]>> => {
   return request({
     method: 'GET',
     url: '/permission/list/filter',
     params,
+  })
+}
+
+export const getAllPermList = (): Promise<ResponseProps<PermDataProps[]>> => {
+  return request({
+    method: 'GET',
+    url: '/permission/list/all',
   })
 }
 
@@ -25,9 +30,7 @@ export const createNewPerm = (data: PermFormProps) => {
   })
 }
 
-export const getPermById = (
-  id: string
-): Promise<ResponseProps<PermDataProps & { roleIds: string[] }>> => {
+export const getPermById = (id: string): Promise<ResponseProps<PermDataProps & { roleIds: string[] }>> => {
   return request({
     method: 'GET',
     url: `/permission/${id}`,

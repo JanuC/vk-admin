@@ -1,54 +1,23 @@
 <template>
-  <el-dialog
-    :model-value="permissionDialogData.isShow"
-    :close-on-click-modal="false"
-  >
+  <el-dialog :model-value="permissionDialogData.isShow" :close-on-click-modal="false">
     <template #header>
       <Title :title="computedTitle(permissionDialogData.type)" />
     </template>
-    <el-descriptions
-      v-if="permissionDialogData.type === 'detail' && permDetail"
-      v-cLoading="loadingStore.isLoading"
-      :column="1"
-      border
-    >
-      <el-descriptions-item label="权限id:" label-class-name="w-[10rem]">{{
-        permDetail?.id
-      }}</el-descriptions-item>
-      <el-descriptions-item label="权限名:">{{
-        permDetail?.name
-      }}</el-descriptions-item>
-      <el-descriptions-item label="枚举值:">{{
-        permDetail?.enumVal
-      }}</el-descriptions-item>
-      <el-descriptions-item label="创建者:">{{
-        permDetail?.createBy
-      }}</el-descriptions-item>
-      <el-descriptions-item label="描述:">{{
-        permDetail?.desc ? permDetail?.desc : '-'
-      }}</el-descriptions-item>
-      <el-descriptions-item label="所属角色:">
+    <el-descriptions v-if="permissionDialogData.type === 'detail' && permDetail" v-cLoading="loadingStore.isLoading" :column="1" border>
+      <el-descriptions-item label="权限id:" label-class-name="w-[10rem]">{{ permDetail?.id }}</el-descriptions-item>
+      <el-descriptions-item label="权限名:">{{ permDetail?.name }}</el-descriptions-item>
+      <el-descriptions-item label="枚举值:">{{ permDetail?.enumVal }}</el-descriptions-item>
+      <el-descriptions-item label="创建者:">{{ permDetail?.createBy }}</el-descriptions-item>
+      <el-descriptions-item label="描述:">{{ permDetail?.desc ? permDetail?.desc : '-' }}</el-descriptions-item>
+      <el-descriptions-item label="已分配角色:">
         <el-space>
-          <el-tag v-for="item in permDetail.roles" :key="item.id">{{
-            item.name
-          }}</el-tag>
+          <el-tag v-for="item in permDetail.roles" :key="item.id">{{ item.name }}</el-tag>
         </el-space>
       </el-descriptions-item>
-      <el-descriptions-item label="创建时间:">{{
-        formatDate(permDetail!.createTime)
-      }}</el-descriptions-item>
-      <el-descriptions-item label="更新时间:">{{
-        formatDate(permDetail!.updateTime)
-      }}</el-descriptions-item>
+      <el-descriptions-item label="创建时间:">{{ formatDate(permDetail!.createTime) }}</el-descriptions-item>
+      <el-descriptions-item label="更新时间:">{{ formatDate(permDetail!.updateTime) }}</el-descriptions-item>
     </el-descriptions>
-    <el-form
-      v-else
-      ref="permFormRef"
-      :model="permForm"
-      label-width="auto"
-      v-cLoading="loadingStore.isLoading"
-      :rules="permFormRules"
-    >
+    <el-form v-else ref="permFormRef" :model="permForm" label-width="auto" v-cLoading="loadingStore.isLoading" :rules="permFormRules">
       <el-form-item label="权限名:" prop="name">
         <el-input v-model="permForm.name" placeholder="请输入权限名"></el-input>
       </el-form-item>
@@ -60,12 +29,7 @@
       </el-form-item>
       <el-form-item label="父级目录:" prop="parentId">
         <el-select v-model="permForm.parentId" placeholder="请选择权限目录">
-          <el-option
-            v-for="item in permMenu"
-            :key="item.id"
-            :value="item.id"
-            :label="item.name"
-          ></el-option>
+          <el-option v-for="item in permMenu" :key="item.id" :value="item.id" :label="item.name"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="枚举值" prop="enumVal">
@@ -76,29 +40,14 @@
             >
           </el-tooltip>
         </template>
-        <el-input
-          v-model="permForm.enumVal"
-          placeholder="请输入唯一枚举值"
-        ></el-input>
+        <el-input v-model="permForm.enumVal" placeholder="请输入唯一枚举值"></el-input>
       </el-form-item>
       <el-form-item label="描述:" prop="desc">
-        <el-input
-          type="textarea"
-          placeholder="请输入描述"
-          v-model="permForm.desc"
-          maxlength="100"
-          show-word-limit
-        ></el-input>
+        <el-input type="textarea" placeholder="请输入描述" v-model="permForm.desc" maxlength="100" show-word-limit></el-input>
       </el-form-item>
       <el-form-item label="分配角色:" prop="roleIds">
         <el-checkbox-group v-model="permForm.roleIds">
-          <el-checkbox
-            v-for="item in roleList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-            :disabled="Boolean(item.isTopRole)"
-          />
+          <el-checkbox v-for="item in roleList" :key="item.id" :label="item.name" :value="item.id" :disabled="Boolean(item.isTopRole)" />
         </el-checkbox-group>
       </el-form-item>
     </el-form>
@@ -109,9 +58,7 @@
       </el-space>
       <el-space v-else>
         <el-button @click="handleClose(permFormRef)">取消</el-button>
-        <el-button type="primary" @click="handleConfirm(permFormRef)"
-          >确认</el-button
-        >
+        <el-button type="primary" @click="handleConfirm(permFormRef)">确认</el-button>
       </el-space>
     </template>
   </el-dialog>
@@ -123,17 +70,10 @@ import { FormInstance, FormRules } from 'element-plus'
 import { useStore } from '@/store/index'
 import { getAllRoles } from '@/http/api/role'
 import { noticeSuccess } from '@/utils/Notification/index'
-import {
-  createNewPerm,
-  getPermById,
-  getPermMenu,
-  updatePermById,
-} from '@/http/api/permission'
+import { createNewPerm, getPermById, getPermMenu, updatePermById } from '@/http/api/permission'
 import { formatDate } from '@/utils/formatDate'
 
-const permissionDialogData = defineModel<PermDialogProps>(
-  'permissionDialogData'
-) as ModelRef<PermDialogProps>
+const permissionDialogData = defineModel<PermDialogProps>('permissionDialogData') as ModelRef<PermDialogProps>
 
 const emits = defineEmits(['updateData'])
 
@@ -236,8 +176,7 @@ const getAllRoleList = async () => {
   roleList.value = data
   // 将预设角色默认选中
   data.forEach((role) => {
-    if (role.isTopRole && !permForm.value.roleIds.includes(role.id))
-      permForm.value.roleIds.push(role.id)
+    if (role.isTopRole && !permForm.value.roleIds.includes(role.id)) permForm.value.roleIds.push(role.id)
   })
 }
 

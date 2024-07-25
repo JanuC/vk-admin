@@ -4,22 +4,12 @@
       <el-space class="w-full flex justify-between">
         <div>
           <el-button type="primary" @click="handleCreate">新建角色</el-button>
-          <el-button type="danger" :disabled="!selectedRows.length"
-            >禁用选中</el-button
-          >
+          <el-button type="danger" :disabled="!selectedRows.length">禁用选中</el-button>
         </div>
         <!-- <span class="font-medium">筛选:</span> -->
-        <el-form
-          inline
-          class="h-[3.2rem]"
-          :model="queryForm"
-          ref="queryFormRef"
-        >
+        <el-form inline class="h-[3.2rem]" :model="queryForm" ref="queryFormRef">
           <el-form-item label="角色名:" prop="name">
-            <el-input
-              placeholder="请输入角色名"
-              v-model="queryForm.name"
-            ></el-input>
+            <el-input placeholder="请输入角色名" v-model="queryForm.name"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="handleFilter">查询</el-button>
@@ -28,23 +18,10 @@
         </el-form>
       </el-space>
     </el-card>
-    <el-card
-      shadow="never"
-      class="flex-1 !border-none flex flex-col"
-      body-class=" flex-1  min-h-0"
-    >
+    <el-card shadow="never" class="flex-1 !border-none flex flex-col" body-class=" flex-1  min-h-0">
       <template #default>
-        <el-table
-          height="100%"
-          :data="tableData"
-          @selection-change="handleSelectionChange"
-          v-cLoading="loadingStore.isLoading && !roleDialogData.isShow"
-        >
-          <el-table-column
-            type="selection"
-            width="55"
-            :selectable="(row: RoleProps) => Boolean(!row.isDefault)"
-          />
+        <el-table height="100%" :data="tableData" @selection-change="handleSelectionChange" v-cLoading="loadingStore.isLoading && !roleDialogData.isShow">
+          <el-table-column type="selection" width="55" :selectable="(row: RoleProps) => Boolean(!row.isDefault)" />
           <!-- <el-table-column label="角色id" prop="id"></el-table-column> -->
           <el-table-column label="角色名" prop="name"></el-table-column>
           <el-table-column label="预设角色" prop="isDefault" align="center">
@@ -62,64 +39,30 @@
           </el-table-column>
           <el-table-column label="操作" align="center">
             <template #default="{ row }">
-              <el-button link type="primary" @click="handleEdit(row.id)"
-                >编辑</el-button
-              >
+              <el-button link type="primary" @click="handleEdit(row.id)">编辑</el-button>
               <el-button link @click="handleDetail(row.id)">详情</el-button>
               <template v-if="row.isDefault">
                 <el-tooltip content="预设角色不能禁用">
-                  <el-button
-                    link
-                    type="warning"
-                    :disabled="Boolean(row.isDefault)"
-                    >禁用</el-button
-                  >
+                  <el-button link type="warning" :disabled="Boolean(row.isDefault)">禁用</el-button>
                 </el-tooltip>
                 <el-tooltip content="预设角色不能删除">
-                  <el-button
-                    link
-                    type="danger"
-                    :disabled="Boolean(row.isDefault)"
-                    >删除</el-button
-                  >
+                  <el-button link type="danger" :disabled="Boolean(row.isDefault)">删除</el-button>
                 </el-tooltip>
               </template>
               <template v-else>
-                <el-popconfirm
-                  v-if="Boolean(row.isEnable)"
-                  title="禁用后该角色将不可用, 确定禁用吗?"
-                  width="20rem"
-                  @confirm="handleChangeRoleStatus(row.id, 0)"
-                  @cancel="messageInfo('已取消操作')"
-                >
+                <el-popconfirm v-if="Boolean(row.isEnable)" title="禁用后该角色将不可用, 确定禁用吗?" width="20rem" @confirm="handleChangeRoleStatus(row.id, 0)" @cancel="messageInfo('已取消操作')">
                   <template #reference>
                     <el-button type="warning" link>禁用</el-button>
                   </template>
                 </el-popconfirm>
-                <el-popconfirm
-                  v-else
-                  title="启用后该角色将恢复正常, 确定启用吗?"
-                  width="20rem"
-                  @confirm="handleChangeRoleStatus(row.id, 1)"
-                  @cancel="messageInfo('已取消操作')"
-                >
+                <el-popconfirm v-else title="启用后该角色将恢复正常, 确定启用吗?" width="20rem" @confirm="handleChangeRoleStatus(row.id, 1)" @cancel="messageInfo('已取消操作')">
                   <template #reference>
                     <el-button link type="success">启用</el-button>
                   </template>
                 </el-popconfirm>
-                <el-popconfirm
-                  title="删除后该角色将不可恢复, 确定删除吗?"
-                  width="20rem"
-                  @confirm="handlerDelRole(row.id)"
-                  @cancel="messageInfo('已取消操作')"
-                >
+                <el-popconfirm title="删除后该角色将不可恢复, 确定删除吗?" width="20rem" @confirm="handlerDelRole(row.id)" @cancel="messageInfo('已取消操作')">
                   <template #reference>
-                    <el-button
-                      link
-                      type="danger"
-                      :disabled="Boolean(row.isDefault)"
-                      >删除</el-button
-                    >
+                    <el-button link type="danger" :disabled="Boolean(row.isDefault)">删除</el-button>
                   </template>
                 </el-popconfirm>
               </template>
@@ -144,21 +87,14 @@
       </template>
     </el-card>
   </div>
-  <RoleDialog
-    v-model:roleDialogData="roleDialogData"
-    @updateData="getTableData"
-  />
+  <RoleDialog v-model:roleDialogData="roleDialogData" @updateData="getTableData" />
 </template>
 
 <script lang="ts" setup>
 import { getRoleList } from '@/http/api/role'
 import { formatDate } from '../../utils/formatDate/index'
 import { FormInstance } from 'element-plus'
-import {
-  getRoleListCount,
-  changeRoleStatus,
-  delRoleById,
-} from '../../http/api/role'
+import { getRoleListCount, changeRoleStatus, delRoleById } from '../../http/api/role'
 import { noticeSuccess } from '../../utils/Notification/index'
 import { messageInfo } from '@/utils/message'
 import { useStore } from '../../store/index'

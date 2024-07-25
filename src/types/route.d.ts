@@ -4,7 +4,8 @@ interface RouteDataProps {
   component: string
   title: string
   icon: string
-  children: RouteDataProps[]
+  parent?: RouteDataProps
+  children?: RouteDataProps[]
   name: string
   parentId: string | null
   order: number
