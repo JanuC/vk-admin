@@ -1,8 +1,6 @@
 import request from '..'
 
-export const getRoleList = (
-  params: QueryRoleProps
-): Promise<ResponseProps<RoleProps[]>> => {
+export const getRoleList = (params: QueryRoleProps): Promise<ResponseProps<RoleProps[]>> => {
   return request({
     method: 'GET',
     url: '/role/list/page',
@@ -10,9 +8,7 @@ export const getRoleList = (
   })
 }
 
-export const getRoleListCount = (
-  params: QueryRoleProps
-): Promise<ResponseProps<number>> => {
+export const getRoleListCount = (params: QueryRoleProps): Promise<ResponseProps<number>> => {
   return request({
     method: 'GET',
     url: '/role/list/count',

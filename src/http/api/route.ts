@@ -15,9 +15,7 @@ export const getAllRoutes = (): Promise<ResponseProps<RouteDataProps[]>> => {
   })
 }
 
-export const getRoutesByPage = (
-  params: any
-): Promise<ResponseProps<RouteDataProps[]>> => {
+export const getRoutesByPage = (params: any): Promise<ResponseProps<RouteDataProps[]>> => {
   return request({
     method: 'GET',
     url: '/route/list/page',
@@ -25,18 +23,14 @@ export const getRoutesByPage = (
   })
 }
 
-export const getRoutesIsParent = (): Promise<
-  ResponseProps<RouteDataProps[]>
-> => {
+export const getRoutesIsParent = (): Promise<ResponseProps<RouteDataProps[]>> => {
   return request({
     method: 'GET',
     url: '/route/list/parent',
   })
 }
 
-export const getRouteById = (
-  id: string
-): Promise<ResponseProps<RouteDataProps>> => {
+export const getRouteById = (id: string): Promise<ResponseProps<RouteDataProps>> => {
   return request({
     method: 'GET',
     url: `/route/${id}`,
@@ -63,5 +57,12 @@ export const updateRouteOrder = (data: OrderProps[]) => {
     method: 'PATCH',
     url: '/route/list/order',
     data,
+  })
+}
+
+export const getAllRouteList = (): Promise<ResponseProps<RouteDataProps[]>> => {
+  return request({
+    method: 'GET',
+    url: '/route/list/all',
   })
 }

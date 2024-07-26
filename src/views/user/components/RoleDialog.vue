@@ -24,11 +24,29 @@
       <el-row justify="space-between">
         <el-col :span="10">
           <el-form-item label="分配权限:">
-            <tree :data="allPerms" :props="{ children: 'children', label: 'name' }" show-checkbox default-expand-all></tree>
+            <tree
+              :data="allPerms"
+              :props="{ children: 'children', label: 'name' }"
+              :key="new Date().getTime()"
+              :show-checkbox="!isTopRole"
+              default-expand-all
+              :default-checked-keys="roleForm.permIds"
+              @check="handleCheckPerms"
+            ></tree>
           </el-form-item>
         </el-col>
         <el-col :span="10">
-          <el-form-item label="分配路由:"></el-form-item>
+          <el-form-item label="分配路由:">
+            <tree
+              :data="allRoutes"
+              :props="{ children: 'children', label: 'title' }"
+              :key="new Date().getTime()"
+              :show-checkbox="!isTopRole"
+              default-expand-all
+              :default-checked-keys="roleForm.routeIds"
+              @check="handleCheckRoutes"
+            ></tree>
+          </el-form-item>
         </el-col>
       </el-row>
     </el-form>
@@ -52,6 +70,15 @@ import { createNewRole, getRoleById, updateRole } from '@/http/api/role'
 import { noticeSuccess } from '@/utils/Notification/index'
 import { useStore } from '@/store/index'
 import { getAllPermList } from '@/http/api/permission'
+import { getAllRouteList } from '@/http/api/route'
+
+interface CheckedObjProps<T> {
+  checkedNodes: T[]
+  checkedKeys: string[]
+  halfCheckedKeys: string[]
+  halfCheckedNodes: T[]
+}
+
 const roleDialogData = defineModel<RoleDialogProps>('roleDialogData') as ModelRef<RoleDialogProps>
 
 const { loadingStore } = useStore()
@@ -64,6 +91,8 @@ const roleForm = ref<RoleDialogFormProps>({
   name: '',
   // isDefault: 0,
   enumVal: '',
+  permIds: [],
+  routeIds: [],
 })
 
 const roleFormRules = reactive<FormRules<RoleProps>>({
@@ -81,9 +110,11 @@ const computedTitle = computed(() => (type: string) => {
 // 关闭 dialog
 const handleClose = (formEl: FormInstance | undefined) => {
   if (!formEl) return
+
   formEl.resetFields()
-  roleDialogData.value.isShow = false
   roleDialogData.value.id = ''
+  allRoutes.value = []
+  roleDialogData.value.isShow = false
 }
 
 // 编辑按钮
@@ -101,15 +132,15 @@ const handleConfirm = async (formEl: FormInstance | undefined) => {
 
 const createOrUpdateRole = async () => {
   const { id } = roleDialogData.value
-  const { name, enumVal } = roleForm.value
+
   if (id) {
     // 编辑操作
-    await updateRole(id, { name, enumVal })
+    await updateRole(id, { ...roleForm.value })
     noticeSuccess('更新角色成功')
     emits('updateData')
   } else {
     // 新建操作
-    await createNewRole({ name, enumVal })
+    await createNewRole({ ...roleForm.value })
     noticeSuccess('新建角色成功')
     // 通知父组件更新数据
     emits('updateData')
@@ -117,17 +148,39 @@ const createOrUpdateRole = async () => {
   handleClose(roleFormRef.value)
 }
 
+// 所有权限
 const allPerms = ref<PermDataProps[]>([])
 const getAllPerms = async () => {
   const { data } = await getAllPermList()
-  console.log(data)
   allPerms.value = data
+}
+
+// 所有角色
+const allRoutes = ref<RouteDataProps[]>([])
+const getAllRoutes = async () => {
+  const { data } = await getAllRouteList()
+  allRoutes.value = data
+}
+
+// 获取选中的权限节点
+const handleCheckPerms = (_: PermDataProps, checkedObject: CheckedObjProps<PermDataProps>) => {
+  const { checkedKeys } = checkedObject
+  roleForm.value.permIds = checkedKeys
+}
+
+// 获取选中的路由节点
+const handleCheckRoutes = (_: RouteDataProps, checkedObject: CheckedObjProps<RouteDataProps>) => {
+  console.log('checked', checkedObject)
+
+  const { checkedKeys } = checkedObject
+  roleForm.value.routeIds = checkedKeys
 }
 
 watch(
   () => roleDialogData.value.isShow,
   (newVal) => {
     if (newVal) {
+      getAllRoutes()
       getAllPerms()
     }
   }
@@ -140,10 +193,15 @@ watch(
   }
 )
 
+// 是否为顶级角色，顶级角色不能配置权限和路由
+const isTopRole = ref<boolean>(false)
+
 // 获取目标角色
 const getTargetRole = async (id: string) => {
   const { data } = await getRoleById(id)
-  roleForm.value = data
+  isTopRole.value = Boolean(data.isTopRole)
+  const { enumVal, name, permIds, routeIds } = data
+  roleForm.value = { enumVal, name, permIds, routeIds }
 }
 </script>
 

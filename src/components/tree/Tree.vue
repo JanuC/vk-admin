@@ -1,5 +1,5 @@
 <template>
-  <el-tree class="w-full" :data="data" :props="props">
+  <el-tree class="w-full" :data="data" :props="props" node-key="id">
     <template #empty>
       <no-data></no-data>
     </template>

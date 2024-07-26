@@ -11,6 +11,9 @@ interface RoleProps {
   isDefault: 0 | 1
   isTopRole: 0 | 1
   enumVal: string
+  // permissions?: PermDataProps[]
+  permIds: string[]
+  routeIds: string[]
   createTime?: Date
   updateTime?: Date
 }
@@ -19,6 +22,8 @@ interface RoleDialogFormProps {
   name: string
   // isDefault: 0 | 1
   enumVal: string
+  permIds: string[]
+  routeIds: string[]
 }
 
 // interface RoleFormProps extends Pick<RoleProps, 'name' | 'isDefault'> {
