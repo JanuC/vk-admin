@@ -155,7 +155,10 @@ request.interceptors.response.use(
       }
     } else {
       // await computedTime(Date.now())
+      console.log(123)
+
       noticeError(message)
+      return Promise.reject(err)
     }
   }
 )

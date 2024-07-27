@@ -7,6 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    BlogTagDialog: typeof import('./src/views/blogs/newBlog/components/BlogTagDialog.vue')['default']
     Breadcrumb: typeof import('./src/components/breadcrumb/Breadcrumb.vue')['default']
     CustomLoading: typeof import('./src/components/loading/CustomLoading.vue')['default']
     Editor: typeof import('./src/components/editor/Editor.vue')['default']
