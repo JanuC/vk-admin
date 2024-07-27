@@ -10,12 +10,14 @@ interface RoleProps {
   isCommon: 0 | 1
   isDefault: 0 | 1
   isTopRole: 0 | 1
+  isEnable: 0 | 1
   enumVal: string
-  // permissions?: PermDataProps[]
+  permissions?: PermDataProps[]
+  routes?: RouteDataProps[]
   permIds: string[]
   routeIds: string[]
-  createTime?: Date
-  updateTime?: Date
+  createTime: Date
+  updateTime: Date
 }
 
 interface RoleDialogFormProps {

@@ -2,11 +2,11 @@ type PermDataProps = {
   id: string
   name: string
   enumVal: string
-  parent: PermDataProps
+  parent?: PermDataProps
   parentId: string | null
   isMenu: number
   desc: string | null
-  childrem: PermDataProps[]
+  children?: PermDataProps[]
   roles: RoleProps[]
   order: number
   createBy: string
@@ -22,9 +22,6 @@ type PermDialogProps = {
 
 type QueryPermFormProps = Pick<PermDataProps, 'type' | 'name' | 'enumVal'>
 
-type PermFormProps = Pick<
-  PermDataProps,
-  'name' | 'enumVal' | 'desc' | 'parentId' | 'isMenu'
-> & {
+type PermFormProps = Pick<PermDataProps, 'name' | 'enumVal' | 'desc' | 'parentId' | 'isMenu'> & {
   roleIds: string[]
 }

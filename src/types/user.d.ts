@@ -6,6 +6,7 @@ interface UserProps {
   email: string
   isEnable: 0 | 1
   isDefault: 0 | 1
+  isRegister: 0 | 1
   address: string
   area: string[] | null
   roleIds: string[]
@@ -26,8 +27,7 @@ interface FilterUserProps {
   username: string
 }
 
-interface NewUserFormProps
-  extends Omit<UserProps, 'id', 'createTime', 'updateTime', 'isDefault'> {}
+interface NewUserFormProps extends Omit<UserProps, 'id', 'createTime', 'updateTime', 'isDefault'> {}
 
 interface UserDialogProps {
   isShow: boolean
@@ -36,8 +36,7 @@ interface UserDialogProps {
   // dialogForm?: NewUserFormProps | null
 }
 
-interface dialogUserFormProps
-  extends Omit<UserProps, 'id' | 'createTime' | 'updateTime'> {
+interface dialogUserFormProps extends Omit<UserProps, 'id' | 'createTime' | 'updateTime' | 'roles' | 'isRegister'> {
   area: string[] | null
   password: string
   confirmPassword: string

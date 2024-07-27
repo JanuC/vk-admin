@@ -3,7 +3,7 @@
     <template #header>
       <Title :title="computedTitle(permissionDialogData.type)" />
     </template>
-    <el-descriptions v-if="permissionDialogData.type === 'detail' && permDetail" v-cLoading="loadingStore.isLoading" :column="1" border>
+    <el-descriptions v-if="permissionDialogData.type === 'detail' && permDetail" v-cLoading="loadingStore.isLoading && permissionDialogData.isShow" :column="1" border>
       <el-descriptions-item label="权限id:" label-class-name="w-[10rem]">{{ permDetail?.id }}</el-descriptions-item>
       <el-descriptions-item label="权限名:">{{ permDetail?.name }}</el-descriptions-item>
       <el-descriptions-item label="枚举值:">{{ permDetail?.enumVal }}</el-descriptions-item>
@@ -17,7 +17,7 @@
       <el-descriptions-item label="创建时间:">{{ formatDate(permDetail!.createTime) }}</el-descriptions-item>
       <el-descriptions-item label="更新时间:">{{ formatDate(permDetail!.updateTime) }}</el-descriptions-item>
     </el-descriptions>
-    <el-form v-else ref="permFormRef" :model="permForm" label-width="auto" v-cLoading="loadingStore.isLoading" :rules="permFormRules">
+    <el-form v-else ref="permFormRef" :model="permForm" label-width="auto" v-cLoading="loadingStore.isLoading && permissionDialogData.isShow" :rules="permFormRules">
       <el-form-item label="权限名:" prop="name">
         <el-input v-model="permForm.name" placeholder="请输入权限名"></el-input>
       </el-form-item>
@@ -43,7 +43,7 @@
         <el-input v-model="permForm.enumVal" placeholder="请输入唯一枚举值"></el-input>
       </el-form-item>
       <el-form-item label="描述:" prop="desc">
-        <el-input type="textarea" placeholder="请输入描述" v-model="permForm.desc" maxlength="100" show-word-limit></el-input>
+        <el-input type="textarea" placeholder="请输入描述" v-model="permForm.desc" maxlength="100" show-word-limit :autosize="{ minRows: 4 }"></el-input>
       </el-form-item>
       <el-form-item label="分配角色:" prop="roleIds">
         <el-checkbox-group v-model="permForm.roleIds">
@@ -180,14 +180,6 @@ const getAllRoleList = async () => {
   })
 }
 
-// 监听是否传递过来id
-watch(
-  () => permissionDialogData.value.id,
-  (id) => {
-    if (id) getTargetPermById(id)
-  }
-)
-
 const getTargetPermById = async (id: string) => {
   const { data } = await getPermById(id)
 
@@ -215,15 +207,18 @@ const getPermMenuList = async () => {
   permMenu.value = data
 }
 
-const getData = () => {
-  getAllRoleList()
-  getPermMenuList()
-}
-
 watch(
-  () => permissionDialogData.value.isShow,
-  (newVal) => {
-    if (newVal) getData()
+  () => [permissionDialogData.value.isShow, permissionDialogData.value.id, permissionDialogData.value.type],
+  ([newShow, newId, newType]) => {
+    if (newShow) {
+      loadingStore.setIsLoading(true)
+      if (newType !== 'detail') {
+        getAllRoleList()
+        getPermMenuList()
+      }
+      if (newId) getTargetPermById(newId as string)
+      loadingStore.setIsLoading(false)
+    }
   }
 )
 </script>

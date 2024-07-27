@@ -4,7 +4,7 @@
       <el-space class="w-full flex justify-between">
         <div>
           <el-button type="primary" @click="handleCreate">新建角色</el-button>
-          <el-button type="danger" :disabled="!selectedRows.length">禁用选中</el-button>
+          <!-- <el-button type="danger" :disabled="!selectedRows.length" @click="handleDisabled">禁用选中</el-button> -->
         </div>
         <!-- <span class="font-medium">筛选:</span> -->
         <el-form inline class="h-[3.2rem]" :model="queryForm" ref="queryFormRef">
@@ -21,8 +21,9 @@
     <el-card shadow="never" class="flex-1 !border-none flex flex-col" body-class=" flex-1  min-h-0">
       <template #default>
         <el-table height="100%" :data="tableData" @selection-change="handleSelectionChange" v-cLoading="loadingStore.isLoading && !roleDialogData.isShow">
-          <el-table-column type="selection" width="55" :selectable="(row: RoleProps) => Boolean(!row.isDefault)" />
+          <!-- <el-table-column type="selection" width="55" :selectable="(row: RoleProps) => Boolean(!row.isDefault)" /> -->
           <!-- <el-table-column label="角色id" prop="id"></el-table-column> -->
+          <el-table-column label="序号" type="index" width="55" align="center" />
           <el-table-column label="角色名" prop="name"></el-table-column>
           <el-table-column label="预设角色" prop="isDefault" align="center">
             <template #default="{ row }">
@@ -147,8 +148,10 @@ const handleSelectionChange = (rows: UserProps[]) => {
 
 // 获取 table 数据
 const getTableData = () => {
+  loadingStore.setIsLoading(true)
   getList()
   getListCount()
+  loadingStore.setIsLoading(false)
 }
 
 const roleDialogData = reactive<RoleDialogProps>({

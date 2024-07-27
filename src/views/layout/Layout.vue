@@ -1,10 +1,7 @@
 <template>
   <div class="w-full h-full">
     <el-container class="w-full h-full">
-      <el-aside
-        width="auto"
-        class="bg-slate-500 flex flex-col border-r-[0.01rem]"
-      >
+      <el-aside width="auto" class="bg-slate-500 flex flex-col border-r-[0.01rem]">
         <Logo class="h-[6rem]" />
         <Menu class="flex-1 min-h-0 overscroll-y-auto" />
       </el-aside>
@@ -15,9 +12,7 @@
         <el-main>
           <RouterView />
         </el-main>
-        <el-footer class="!h-[4rem] border-t-[0.01rem] flex items-center"
-          >Footer</el-footer
-        >
+        <el-footer class="!h-[4rem] border-t-[0.01rem] flex items-center">Footer</el-footer>
       </el-container>
     </el-container>
   </div>

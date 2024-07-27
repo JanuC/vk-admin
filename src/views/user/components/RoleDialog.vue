@@ -3,7 +3,40 @@
     <template #header>
       <Title :title="computedTitle(roleDialogData.type)" />
     </template>
-    <el-form :model="roleForm" label-width="auto" :rules="roleFormRules" ref="roleFormRef" v-cLoading="loadingStore.isLoading">
+    <el-descriptions v-if="roleDialogData.type === 'detail'" v-cLoading="loadingStore.isLoading && roleDialogData.isShow" :column="2" border>
+      <el-descriptions-item label="角色id:" label-class-name="w-[10rem]" :span="2">{{ roleDetail?.id }}</el-descriptions-item>
+      <el-descriptions-item label="角色名:" label-class-name="w-[10rem]">{{ roleDetail?.name }}</el-descriptions-item>
+      <el-descriptions-item label="枚举值:" label-class-name="w-[10rem]">{{ roleDetail?.enumVal }}</el-descriptions-item>
+      <el-descriptions-item label="公共角色:" label-class-name="w-[10rem]">
+        <el-tag :type="roleDetail?.isCommon ? 'success' : 'danger'">{{ roleDetail?.isCommon ? '是' : '否' }}</el-tag>
+      </el-descriptions-item>
+      <el-descriptions-item label="预设角色:" label-class-name="w-[10rem]">
+        <el-tag :type="roleDetail?.isDefault ? 'success' : 'danger'">{{ roleDetail?.isDefault ? '是' : '否' }}</el-tag>
+      </el-descriptions-item>
+      <el-descriptions-item label="顶级角色:" label-class-name="w-[10rem]">
+        <el-tag :type="roleDetail?.isTopRole ? 'success' : 'danger'">{{ roleDetail?.isTopRole ? '是' : '否' }}</el-tag>
+      </el-descriptions-item>
+      <el-descriptions-item label="状态:" label-class-name="w-[10rem]">
+        <el-tag :type="roleDetail?.isEnable ? 'success' : 'danger'">{{ roleDetail?.isEnable ? '启用' : '禁用' }}</el-tag>
+      </el-descriptions-item>
+      <el-descriptions-item label="角色权限:" label-class-name="w-[10rem]  ">
+        <template #default>
+          <div class="w-full h-[15rem] overflow-y-auto">
+            <tree :data="roleDetail?.permissions" :props="{ children: 'children', label: 'name' }"></tree>
+          </div>
+        </template>
+      </el-descriptions-item>
+      <el-descriptions-item label="角色路由:" label-class-name="w-[10rem]">
+        <template #default>
+          <div class="w-full h-[15rem] overflow-y-auto">
+            <tree :data="roleDetail?.routes" :props="{ children: 'children', label: 'title' }"></tree>
+          </div>
+        </template>
+      </el-descriptions-item>
+      <el-descriptions-item label="创建时间:" label-class-name="w-[10rem]" :span="2">{{ formatDate(roleDetail?.createTime!) }}</el-descriptions-item>
+      <el-descriptions-item label="更新时间:" label-class-name="w-[10rem]" :span="2">{{ formatDate(roleDetail?.updateTime!) }}</el-descriptions-item>
+    </el-descriptions>
+    <el-form v-else :model="roleForm" label-width="auto" :rules="roleFormRules" ref="roleFormRef" v-cLoading="loadingStore.isLoading && roleDialogData.isShow">
       <el-row justify="space-between">
         <el-col :span="10">
           <el-form-item label="角色名:" prop="name">
@@ -28,7 +61,7 @@
               :data="allPerms"
               :props="{ children: 'children', label: 'name' }"
               :key="new Date().getTime()"
-              :show-checkbox="!isTopRole"
+              :show-checkbox="!roleDetail?.isTopRole"
               default-expand-all
               :default-checked-keys="roleForm.permIds"
               @check="handleCheckPerms"
@@ -41,7 +74,7 @@
               :data="allRoutes"
               :props="{ children: 'children', label: 'title' }"
               :key="new Date().getTime()"
-              :show-checkbox="!isTopRole"
+              :show-checkbox="!roleDetail?.isTopRole"
               default-expand-all
               :default-checked-keys="roleForm.routeIds"
               @check="handleCheckRoutes"
@@ -71,6 +104,7 @@ import { noticeSuccess } from '@/utils/Notification/index'
 import { useStore } from '@/store/index'
 import { getAllPermList } from '@/http/api/permission'
 import { getAllRouteList } from '@/http/api/route'
+import { formatDate } from '@/utils/formatDate'
 
 interface CheckedObjProps<T> {
   checkedNodes: T[]
@@ -95,7 +129,7 @@ const roleForm = ref<RoleDialogFormProps>({
   routeIds: [],
 })
 
-const roleFormRules = reactive<FormRules<RoleProps>>({
+const roleFormRules = reactive<FormRules<RoleDialogFormProps>>({
   name: [{ required: true, message: '角色名不能为空', trigger: ['change', 'blur'] }],
   enumVal: [{ required: true, message: '枚举值不能为空', trigger: ['change', 'blur'] }],
 })
@@ -109,9 +143,11 @@ const computedTitle = computed(() => (type: string) => {
 
 // 关闭 dialog
 const handleClose = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
+  if (roleDialogData.value.type !== 'detail') {
+    if (!formEl) return
 
-  formEl.resetFields()
+    formEl.resetFields()
+  }
   roleDialogData.value.id = ''
   allRoutes.value = []
   roleDialogData.value.isShow = false
@@ -120,6 +156,8 @@ const handleClose = (formEl: FormInstance | undefined) => {
 // 编辑按钮
 const handleEdit = () => {
   roleDialogData.value.type = 'edit'
+  roleDialogData.value.id = roleDetail!.value!.id
+  getTargetRole(roleDetail.value!.id)
 }
 
 // 确认按钮
@@ -177,29 +215,28 @@ const handleCheckRoutes = (_: RouteDataProps, checkedObject: CheckedObjProps<Rou
 }
 
 watch(
-  () => roleDialogData.value.isShow,
-  (newVal) => {
-    if (newVal) {
-      getAllRoutes()
-      getAllPerms()
+  () => [roleDialogData.value.isShow, roleDialogData.value.id, roleDialogData.value.type],
+  ([newShow, newId, newType]) => {
+    if (newShow) {
+      loadingStore.setIsLoading(true)
+      if (newType !== 'detail') {
+        getAllRoutes()
+        getAllPerms()
+      }
+      if (newId) getTargetRole(newId as string)
+      loadingStore.setIsLoading(false)
     }
   }
 )
 
-watch(
-  () => roleDialogData.value.id,
-  (newId) => {
-    if (newId) getTargetRole(newId)
-  }
-)
-
 // 是否为顶级角色，顶级角色不能配置权限和路由
-const isTopRole = ref<boolean>(false)
+// const isTopRole = ref<boolean>(false)
 
 // 获取目标角色
+const roleDetail = ref<RoleProps>()
 const getTargetRole = async (id: string) => {
   const { data } = await getRoleById(id)
-  isTopRole.value = Boolean(data.isTopRole)
+  roleDetail.value = data
   const { enumVal, name, permIds, routeIds } = data
   roleForm.value = { enumVal, name, permIds, routeIds }
 }

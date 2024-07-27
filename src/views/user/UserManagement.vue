@@ -4,7 +4,7 @@
       <el-space class="w-full flex justify-between">
         <div>
           <el-button type="primary" @click="handleCreate">新建用户</el-button>
-          <el-button type="danger" :disabled="!selectedRows.length">禁用选中</el-button>
+          <!-- <el-button type="danger" :disabled="!selectedRows.length">禁用选中</el-button> -->
         </div>
         <!-- <span class="font-medium">筛选:</span> -->
         <el-form inline class="h-[3.2rem]" :model="queryForm" ref="queryFormRef">
@@ -21,15 +21,23 @@
     <el-card shadow="never" class="flex-1 !border-none flex flex-col" body-class=" flex-1  min-h-0">
       <template #default>
         <el-table height="100%" :data="tableData" v-cLoading="loadingStore.isLoading && !userDialogData.isShow" @selection-change="handleSelectionChange">
-          <el-table-column type="selection" width="55" :selectable="(row: UserProps) => Boolean(!row.isDefault)" />
+          <!-- <el-table-column type="selection" width="55" :selectable="(row: UserProps) => Boolean(!row.isDefault)" /> -->
+          <el-table-column label="序号" type="index" width="55" align="center" />
           <el-table-column label="用户名" prop="username"></el-table-column>
           <el-table-column label="昵称" prop="nickName"></el-table-column>
-          <el-table-column label="角色数" align="center">
+          <el-table-column label="角色">
             <template #default="{ row }">
-              <el-text type="primary">{{ row.roles.length }}</el-text>
+              <!-- <el-text type="primary">{{ row.roles.length }}</el-text> -->
+              <el-space
+                ><el-tag type="primary" v-for="role in row.roles" :key="role.id">{{ role.name }}</el-tag></el-space
+              >
             </template>
           </el-table-column>
-          <el-table-column label="路由数"></el-table-column>
+          <el-table-column label="创建方式">
+            <template #default="{ row }">
+              <el-tag :type="row.isRegister ? 'success' : 'danger'">{{ row.isRegister ? '注册' : '新建' }}</el-tag>
+            </template>
+          </el-table-column>
           <el-table-column label="创建时间">
             <template #default="{ row }">
               {{ formatDate(row.createTime) }}
@@ -71,14 +79,14 @@
       </template>
       <template #footer>
         <div class="flex justify-around">
-          <!-- <el-pagination
+          <el-pagination
             class="text-center"
             v-model:current-page="queryForm.current"
             v-model:page-size="queryForm.pageSize"
             :page-sizes="[10, 20, 50, 100]"
             layout="total, sizes, prev, pager, next, jumper"
             :total="total"
-          /> -->
+          />
         </div>
       </template>
     </el-card>
@@ -140,7 +148,9 @@ const handleSelectionChange = (rows: UserProps[]) => {
 
 // 获取 table 数据
 const getTableData = () => {
+  loadingStore.setIsLoading(true)
   getList()
+  loadingStore.setIsLoading(false)
 }
 
 const userDialogData = reactive<UserDialogProps>({

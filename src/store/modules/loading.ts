@@ -6,36 +6,31 @@ export const useLoadingStore = defineStore(Names.Loading, {
   state: () => {
     return {
       isLoading: false,
+      startLoading: 0,
+      minLoadingTime: 500,
       requestCount: 0,
     }
   },
-  // getters: {
-  //   addRequesetCount() {
-  //     this.requestCount += 1
-  //   },
-  //   decRequestCount() {
-  //     this.requestCount -= 1
-  //     this.requestCount = Math.max(this.requestCount, 0)
-  //     if (this.requestCount === 0) {
-  //       this.isLoading = false
-  //     }
-  //   },
-  // },
   actions: {
     setIsLoading(flag: boolean) {
-      this.isLoading = flag
-    },
-    addRequesetCount() {
-      this.requestCount += 1
-      console.log('xx')
+      if (flag) {
+        this.startLoading = Date.now()
+        this.requestCount += 1
+        this.isLoading = flag
+      } else {
+        this.requestCount -= 1
+        this.requestCount = Math.max(this.requestCount, 0)
 
-      if (!this.requestCount) this.isLoading = true
-    },
-    decRequestCount() {
-      this.requestCount -= 1
-      this.requestCount = Math.max(this.requestCount, 0)
-      if (this.requestCount === 0) {
-        this.isLoading = false
+        if (this.requestCount === 0) {
+          const timeDifference = this.minLoadingTime - (Date.now() - this.startLoading)
+          if (timeDifference > 0) {
+            setTimeout(() => {
+              this.isLoading = flag
+            }, timeDifference)
+          } else {
+            this.isLoading = flag
+          }
+        }
       }
     },
   },

@@ -3,7 +3,7 @@
     <template #header>
       <Title :title="computedTitle(routeDialogData.type)" />
     </template>
-    <el-descriptions v-if="routeDialogData.type === 'detail'" v-cLoading="loadingStore.isLoading" :column="2" border>
+    <el-descriptions v-if="routeDialogData.type === 'detail'" v-cLoading="loadingStore.isLoading && routeDialogData.isShow" :column="2" border>
       <el-descriptions-item label="权限id:" label-class-name="w-[10rem]" :span="2">{{ routeDetail?.id }}</el-descriptions-item>
       <el-descriptions-item label="路由图标:" label-class-name="w-[10rem]">
         <template v-if="routeDetail?.icon">
@@ -41,7 +41,7 @@
       <el-descriptions-item label="创建时间:" label-class-name="w-[10rem]" :span="2">{{ formatDate(routeDetail?.createTime!) }}</el-descriptions-item>
       <el-descriptions-item label="更新时间:" label-class-name="w-[10rem]" :span="2">{{ formatDate(routeDetail?.updateTime!) }}</el-descriptions-item>
     </el-descriptions>
-    <el-form v-else ref="routeFormRef" :model="routeForm" label-width="auto" :rules="routeFormRules" v-cLoading="loadingStore.isLoading">
+    <el-form v-else ref="routeFormRef" :model="routeForm" label-width="auto" :rules="routeFormRules" v-cLoading="loadingStore.isLoading && routeDialogData.isShow">
       <el-form-item prop="title">
         <template #label>
           <el-tooltip content="路由名称，对应title值">
@@ -345,13 +345,6 @@ const handleConfirm = async (formEl: FormInstance | undefined) => {
   })
 }
 
-watch(
-  () => routeDialogData.value.id,
-  (newId) => {
-    if (newId) getTargetRoute(newId)
-  }
-)
-
 // 获取目标路由
 const routeDetail = ref<RouteDataProps>()
 const getTargetRoute = async (id: string) => {
@@ -386,26 +379,25 @@ const createOrUpdateRoute = async () => {
   emits('updateData')
 }
 
-const getData = () => {
-  getAllRoleList()
-  getParentRoutes()
-}
-
 // 切换当前选中的id
 const handleChangeRouteId = (id: string) => {
   routeDialogData.value.id = id
 }
 
 watch(
-  () => routeDialogData.value.isShow,
-  (newVal) => {
-    if (newVal) getData()
+  () => [routeDialogData.value.isShow, routeDialogData.value.id, routeDialogData.value.type],
+  ([newShow, newId, newType]) => {
+    if (newShow) {
+      loadingStore.setIsLoading(true)
+      if (newType !== 'detail') {
+        getAllRoleList()
+        getParentRoutes()
+      }
+      if (newId) getTargetRoute(newId as string)
+      loadingStore.setIsLoading(false)
+    }
   }
 )
-
-// onMounted(() => {
-//   getData()
-// })
 </script>
 
 <style lang="scss" scoped></style>

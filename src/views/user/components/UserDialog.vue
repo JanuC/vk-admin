@@ -4,7 +4,7 @@
       <template #header>
         <Title :title="computedTitle(userDialogData.type)" />
       </template>
-      <el-descriptions v-if="userDialogData.type === 'detail' && userDetail" v-cLoading="loadingStore.isLoading" :column="2" border>
+      <el-descriptions v-if="userDialogData.type === 'detail' && userDetail" v-cLoading="loadingStore.isLoading && userDialogData.isShow" :column="2" border>
         <el-descriptions-item label="用户id:" label-class-name="w-[10rem]" :span="2">{{ userDetail.id }}</el-descriptions-item>
         <el-descriptions-item label="用户名:" label-class-name="w-[10rem]" :span="1">{{ userDetail.username }}</el-descriptions-item>
         <el-descriptions-item label="昵称:" label-class-name="w-[10rem]" :span="1">{{ userDetail.nickName }}</el-descriptions-item>
@@ -34,7 +34,7 @@
           {{ formatDate(userDetail.updateTime) }}
         </el-descriptions-item>
       </el-descriptions>
-      <el-form v-else :model="userForm" class="mt-[1rem]" label-width="auto" :rules="userFormRules" ref="userFormRef" v-cLoading="loadingStore.isLoading">
+      <el-form v-else :model="userForm" class="mt-[1rem]" label-width="auto" :rules="userFormRules" ref="userFormRef" v-cLoading="loadingStore.isLoading && userDialogData.isShow">
         <el-collapse v-model="activeCollapse">
           <el-collapse-item title="基础表单" name="basic">
             <template #title>
@@ -150,6 +150,7 @@ import { noticeSuccess } from '@/utils/Notification/index'
 import { pcaTextArr } from 'element-china-area-data'
 import { useStore } from '@/store/index'
 import { formatDate } from '@/utils/formatDate'
+import { encryptString } from '@/utils/md5'
 
 const userDialogData = defineModel<UserDialogProps>('userDialogData') as ModelRef<UserDialogProps>
 
@@ -276,8 +277,6 @@ const handleClose = (formEl: FormInstance | undefined) => {
 // 获取所有角色
 const getAllRolesList = async () => {
   const { data } = await getAllRoles()
-  console.log('d', data)
-
   allRoles.value = data
   // 将预设角色默认选中
   data.forEach((role: RoleProps) => {
@@ -292,13 +291,6 @@ const handleConifrm = async (formEl: FormInstance | undefined) => {
     if (valid) createOrUpdateUser()
   })
 }
-
-watch(
-  () => userDialogData.value.id,
-  (newId) => {
-    if (newId) getTargetUser(newId)
-  }
-)
 
 // 获取目标用户信息
 const userDetail = ref<UserProps>()
@@ -344,7 +336,7 @@ const createOrUpdateUser = async () => {
     // 创建用户
     await createUser({
       username,
-      password,
+      password: encryptString(password),
       avatar,
       email,
       phone,
@@ -360,9 +352,16 @@ const createOrUpdateUser = async () => {
 }
 
 watch(
-  () => userDialogData.value.isShow,
-  (newVal) => {
-    if (newVal) getAllRolesList()
+  () => [userDialogData.value.isShow, userDialogData.value.id, userDialogData.value.type],
+  ([newShow, newId, newType]) => {
+    if (newShow) {
+      loadingStore.setIsLoading(true)
+      if (newType !== 'detail') {
+        getAllRolesList()
+      }
+      if (newId) getTargetUser(newId as string)
+      loadingStore.setIsLoading(false)
+    }
   }
 )
 </script>

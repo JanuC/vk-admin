@@ -25,7 +25,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 99999;
+  z-index: 2;
 }
 .snake-spinner {
   width: 100px;

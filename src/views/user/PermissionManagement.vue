@@ -4,33 +4,18 @@
       <el-space class="w-full flex justify-between">
         <el-space>
           <el-button type="primary" @click="handleCreate">新建权限</el-button>
-          <el-button type="warning" @click="handleSort" v-if="!isSort"
-            >修改排序</el-button
-          >
+          <el-button type="warning" @click="handleSort" v-if="!isSort">修改排序</el-button>
           <template v-else>
-            <el-button type="success" @click="handleConfirmSort"
-              >更新</el-button
-            >
+            <el-button type="success" @click="handleConfirmSort">更新</el-button>
             <el-button @click="handleCancel">取消</el-button>
           </template>
         </el-space>
-        <el-form
-          inline
-          class="h-[3.2rem]"
-          :model="queryForm"
-          ref="queryFormRef"
-        >
+        <el-form inline class="h-[3.2rem]" :model="queryForm" ref="queryFormRef">
           <el-form-item label="权限名:" prop="name">
-            <el-input
-              placeholder="请输入权限名"
-              v-model="queryForm.name"
-            ></el-input>
+            <el-input placeholder="请输入权限名" v-model="queryForm.name"></el-input>
           </el-form-item>
           <el-form-item label="枚举值:" prop="enumVal">
-            <el-input
-              placeholder="请输入枚举值"
-              v-model="queryForm.enumVal"
-            ></el-input>
+            <el-input placeholder="请输入枚举值" v-model="queryForm.enumVal"></el-input>
           </el-form-item>
 
           <el-form-item>
@@ -40,11 +25,7 @@
         </el-form>
       </el-space>
     </el-card>
-    <el-card
-      shadow="never"
-      class="flex-1 !border-none flex flex-col"
-      body-class=" flex-1 min-h-0"
-    >
+    <el-card shadow="never" class="flex-1 !border-none flex flex-col" body-class=" flex-1 min-h-0">
       <template #default>
         <el-table
           height="100%"
@@ -74,10 +55,9 @@
               'popper-class': 'w-[30rem] max-h-[20rem] ',
             }"
           >
-            <template #default="{ row }">{{
-              row.desc ? row.desc : '-'
-            }}</template>
+            <template #default="{ row }">{{ row.desc ? row.desc : '-' }}</template>
           </el-table-column>
+          <!-- <el-table-column label="权重" prop="order" width="140" align="center"></el-table-column> -->
           <el-table-column label="创建者" prop="createBy"></el-table-column>
           <el-table-column label="创建时间">
             <template #default="{ row }">
@@ -86,28 +66,12 @@
           </el-table-column>
           <el-table-column label="操作" align="center">
             <template #default="{ row }">
-              <el-button link type="primary" @click="handleEdit(row.id)"
-                >编辑</el-button
-              >
+              <el-button link type="primary" @click="handleEdit(row.id)">编辑</el-button>
               <el-button link @click="handleDetail(row.id)">详情</el-button>
-              <el-tooltip
-                content="具有子权限的目录不可删除"
-                v-if="row.children.length"
-              >
-                <el-button
-                  link
-                  type="danger"
-                  :disabled="Boolean(row.children.length)"
-                  >删除</el-button
-                >
+              <el-tooltip content="具有子权限的目录不可删除" v-if="row.children.length">
+                <el-button link type="danger" :disabled="Boolean(row.children.length)">删除</el-button>
               </el-tooltip>
-              <el-popconfirm
-                v-else
-                title="删除后该权限将不可恢复, 确定删除吗?"
-                width="20rem"
-                @confirm="handleDelete(row.id)"
-                @cancel="messageInfo('已取消操作')"
-              >
+              <el-popconfirm v-else title="删除后该权限将不可恢复, 确定删除吗?" width="20rem" @confirm="handleDelete(row.id)" @cancel="messageInfo('已取消操作')">
                 <template #reference>
                   <el-button link type="danger">删除</el-button>
                 </template>
@@ -120,20 +84,12 @@
         </el-table>
       </template>
     </el-card>
-    <PermissionDialog
-      v-model:permissionDialogData="permissionDialogData"
-      @updateData="getNewData"
-      ref="permDailog"
-    />
+    <PermissionDialog v-model:permissionDialogData="permissionDialogData" @updateData="getNewData" ref="permDailog" />
   </div>
 </template>
 
 <script lang="ts" setup name="Perm">
-import {
-  delPermById,
-  getPermListByFilter,
-  updatePermOrder,
-} from '@/http/api/permission'
+import { delPermById, getPermListByFilter, updatePermOrder } from '@/http/api/permission'
 import { useStore } from '@/store'
 import { FormInstance } from 'element-plus'
 import { formatDate } from '../../utils/formatDate/index'
@@ -179,8 +135,10 @@ const handleResetFilter = (formEl: FormInstance | undefined) => {
 }
 
 const getData = async () => {
+  loadingStore.setIsLoading(true)
   const { data } = await getPermListByFilter({ ...queryForm.value })
   tableData.value = data
+  loadingStore.setIsLoading(false)
 }
 
 const handleEdit = (id: string) => {
@@ -277,10 +235,7 @@ const initSortable = () => {
       const sourceObj = newTable[oldIndex]
       const targetObj = newTable[newIndex]
       // 判断是否为同一级
-      if (
-        (!sourceObj.parentId && !targetObj.parentId) ||
-        sourceObj.parentId === targetObj.parentId
-      ) {
+      if ((!sourceObj.parentId && !targetObj.parentId) || sourceObj.parentId === targetObj.parentId) {
         const currRow = newTable.splice(oldIndex, 1)[0]
         newTable.splice(newIndex, 0, currRow)
 

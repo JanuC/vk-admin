@@ -3,20 +3,14 @@
     <el-card shadow="never" class="mb-[0.4rem] !border-none">
       <el-space>
         <el-button type="primary" @click="handleCreate">新建路由</el-button>
-        <el-button type="warning" @click="handleSort" v-if="!isSort"
-          >修改排序</el-button
-        >
+        <el-button type="warning" @click="handleSort" v-if="!isSort">修改排序</el-button>
         <template v-else>
           <el-button type="success" @click="handleConfirmSort">更新</el-button>
           <el-button @click="handleCancel">取消</el-button>
         </template>
       </el-space>
     </el-card>
-    <el-card
-      shadow="never"
-      class="flex-1 !border-none flex flex-col"
-      body-class=" flex-1 min-h-0"
-    >
+    <el-card shadow="never" class="flex-1 !border-none flex flex-col" body-class=" flex-1 min-h-0">
       <template #default>
         <el-table
           height="100%"
@@ -38,9 +32,7 @@
           <el-table-column label="图标" prop="icon" align="center">
             <template #default="{ row }">
               <el-icon>
-                <component
-                  :is="Icons[row.icon as keyof typeof Icons]"
-                ></component>
+                <component :is="Icons[row.icon as keyof typeof Icons]"></component>
               </el-icon>
             </template>
           </el-table-column>
@@ -51,28 +43,12 @@
           </el-table-column>
           <el-table-column label="操作" align="center">
             <template #default="{ row }">
-              <el-button link type="primary" @click="handleEdit(row.id)"
-                >编辑</el-button
-              >
+              <el-button link type="primary" @click="handleEdit(row.id)">编辑</el-button>
               <el-button link @click="handleDetail(row.id)">详情</el-button>
-              <el-tooltip
-                content="具有子路由的路由不可删除"
-                v-if="row.children.length"
-              >
-                <el-button
-                  link
-                  type="danger"
-                  :disabled="Boolean(row.children.length)"
-                  >删除</el-button
-                >
+              <el-tooltip content="具有子路由的路由不可删除" v-if="row.children.length">
+                <el-button link type="danger" :disabled="Boolean(row.children.length)">删除</el-button>
               </el-tooltip>
-              <el-popconfirm
-                v-else
-                title="删除路由后将不可恢复, 确定删除吗?"
-                width="20rem"
-                @confirm="handleDelete(row.id)"
-                @cancel="messageInfo('已取消操作')"
-              >
+              <el-popconfirm v-else title="删除路由后将不可恢复, 确定删除吗?" width="20rem" @confirm="handleDelete(row.id)" @cancel="messageInfo('已取消操作')">
                 <template #reference>
                   <el-button link type="danger">删除</el-button>
                 </template>
@@ -86,10 +62,7 @@
       </template>
     </el-card>
   </div>
-  <RouteDialog
-    v-model:routeDialogData="routeDialogData"
-    @updateData="getData"
-  />
+  <RouteDialog v-model:routeDialogData="routeDialogData" @updateData="getData" />
 </template>
 
 <script lang="ts" setup>
@@ -208,10 +181,7 @@ const initSortable = () => {
       const sourceObj = newTable[oldIndex]
       const targetObj = newTable[newIndex]
       // 判断是否为同一级
-      if (
-        (!sourceObj.parentId && !targetObj.parentId) ||
-        sourceObj.parentId === targetObj.parentId
-      ) {
+      if ((!sourceObj.parentId && !targetObj.parentId) || sourceObj.parentId === targetObj.parentId) {
         const currRow = newTable.splice(oldIndex, 1)[0]
         newTable.splice(newIndex, 0, currRow)
 
@@ -246,7 +216,9 @@ const getAllRouteList = async () => {
 }
 
 const getData = () => {
+  loadingStore.setIsLoading(true)
   getAllRouteList()
+  loadingStore.setIsLoading(false)
 }
 
 // 编辑

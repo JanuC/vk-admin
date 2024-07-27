@@ -55,7 +55,7 @@ export const delPermById = (id: string) => {
 export const updatePermOrder = (data: OrderProps[]) => {
   return request({
     method: 'PATCH',
-    url: '/route/list/order',
+    url: '/permission/list/order',
     data,
   })
 }
