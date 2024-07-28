@@ -1,0 +1,3 @@
+type FileProps = {
+  url: string
+}

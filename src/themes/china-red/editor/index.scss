@@ -1,0 +1,30 @@
+@use '../elementPlus/var';
+html.china-red {
+  .md-editor-catalog {
+    border-right: 1px solid var(--el-border-color);
+  }
+
+  .default-theme {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      color: var(--el-color-primary);
+    }
+  }
+
+  .md-editor-catalog {
+    .md-editor-catalog-link {
+      span:hover {
+        color: var(--el-color-primary);
+      }
+      &.md-editor-catalog-active {
+        span {
+          color: var(--el-color-primary);
+        }
+      }
+    }
+  }
+}

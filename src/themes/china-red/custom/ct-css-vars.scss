@@ -16,6 +16,11 @@ html.china-red {
   --el-mask-color: rgba(255, 255, 255, 0.99);
 
   --el-loading-bg-color: #fff;
+
+  // .md-editor-catalog {
+  //   border-right: 1px solid var(--el-border-color);
+  // }
+
   .el-menu-item-group__title {
     display: none;
   }
@@ -63,8 +68,7 @@ html.china-red {
   //TagsView
   --tags-view-background: #fff;
   --tags-view-border-bottom: #d8dce5;
-  --tags-view-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12),
-    0 0 3px 0 rgba(0, 0, 0, 0.04);
+  --tags-view-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12), 0 0 3px 0 rgba(0, 0, 0, 0.04);
   --tags-view-item-background: #fff;
   --tags-view-item-border-color: #d8dce5;
   --tags-view-item-color: #495060;

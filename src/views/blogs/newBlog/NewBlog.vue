@@ -40,15 +40,21 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row class="h-full flex-1">
-        <el-form-item label="正文:" class="w-full" prop="content">
+      <el-row class="h-full flex-1 min-h-0">
+        <el-form-item label="正文:" class="w-full h-full" prop="content">
           <Editor v-model:content="newBlogForm.content" />
         </el-form-item>
       </el-row>
       <el-row>
-        <el-form-item label="操作:">
-          <el-button type="primary" @click="handleSave(newBlogFormRef)">保存</el-button>
-          <el-button type="warning" @click="handleReset(newBlogFormRef)">重置</el-button>
+        <el-form-item label="操作:" class="h-full flex items-center">
+          <el-button :type="route.query.id ? 'success' : 'primary'" @click="handleSave(newBlogFormRef)">
+            {{ route.query.id ? '更新' : '保存' }}
+          </el-button>
+          <el-popconfirm title="重置后将丢失所有内容, 确定重置吗?" width="20rem" @confirm="handleReset(newBlogFormRef)" @cancel="messageInfo('已取消操作')">
+            <template #reference>
+              <el-button type="warning">重置</el-button>
+            </template>
+          </el-popconfirm>
         </el-form-item>
       </el-row>
     </el-form>
@@ -57,13 +63,18 @@
 </template>
 
 <script lang="ts" setup>
-import { createNewBlog } from '@/http/api/blog'
+import { createNewBlog, getBlogById, updateBlogById } from '@/http/api/blog'
 import { getBlogTags } from '@/http/api/blogTag'
 import { useStore } from '@/store'
+import { messageInfo } from '@/utils/message'
 import { noticeSuccess } from '@/utils/Notification'
 import { FormInstance, FormRules } from 'element-plus'
 
 const { loadingStore } = useStore()
+
+const route = useRoute()
+
+const router = useRouter()
 
 // 博客表单
 const newBlogForm = ref<newBlogProps>({
@@ -124,33 +135,59 @@ const delTagBySelected = (id: string) => {
  * 获取所有标签
  */
 const getBlogTagList = async () => {
-  loadingStore.setIsLoading(true)
   const { data } = await getBlogTags('')
   tagsData.value = data
-  loadingStore.setIsLoading(false)
 }
 
 const handleSave = async (formEl: FormInstance | undefined) => {
-  console.log(newBlogForm.value)
   if (!formEl) return
   await formEl.validate((valid) => {
-    if (valid) createBlog()
+    if (valid) createOrUpdateBlog()
   })
 }
 
 const handleReset = (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formEl.resetFields()
+  router.replace('/blogs/new')
 }
 
-const createBlog = async () => {
-  await createNewBlog({ ...newBlogForm.value })
-  noticeSuccess('新建博客成功')
-  newBlogFormRef.value?.resetFields()
+const createOrUpdateBlog = async () => {
+  if (route.query.id) {
+    await updateBlogById(route.query.id as string, { ...newBlogForm.value })
+    noticeSuccess('更新博客成功')
+  } else {
+    await createNewBlog({ ...newBlogForm.value })
+    noticeSuccess('新建博客成功')
+  }
+
+  handleReset(newBlogFormRef.value)
+}
+
+const getTargetBlog = async (id: string) => {
+  const { data } = await getBlogById(id)
+
+  const { title, tags, status, content, desc } = data
+  console.log('d', data)
+
+  newBlogForm.value = { title, tags, status, content: content!, desc }
+}
+
+const getData = () => {
+  loadingStore.setIsLoading(true)
+  getBlogTagList()
+  const { query } = route
+
+  if (query && query.id) {
+    console.log(123)
+    getTargetBlog(query.id as string)
+  }
+
+  loadingStore.setIsLoading(false)
 }
 
 onMounted(() => {
-  getBlogTagList()
+  getData()
 })
 </script>
 

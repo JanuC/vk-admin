@@ -93,16 +93,23 @@
             <el-row justify="space-around">
               <el-col :span="10">
                 <el-form-item label="用户头像:" prop="avatar">
-                  <el-space>
-                    <el-image class="w-[10rem] h-[10rem]" :src="userForm.avatar" fit="cover">
-                      <template #error>
-                        <div class="image-slot w-full h-full flex justify-around items-center bg-[var(--el-fill-color-light)]">
-                          <i-ep-picture />
-                        </div>
-                      </template>
-                    </el-image>
-                    <UploadImage />
-                  </el-space>
+                  <!-- <el-space class="w-full !flex"> -->
+                  <el-row class="w-full" justify="space-between">
+                    <el-col :span="8">
+                      <el-image class="w-[10rem] h-[10rem]" :src="userForm.avatar" fit="cover">
+                        <template #error>
+                          <div class="image-slot w-full h-full flex justify-around items-center bg-[var(--el-fill-color-light)]">
+                            <i-ep-picture />
+                          </div>
+                        </template>
+                      </el-image>
+                    </el-col>
+                    <el-col :span="14">
+                      <UploadImage @getImageUrl="handleGetImageUrl" />
+                    </el-col>
+                  </el-row>
+
+                  <!-- </el-space> -->
                 </el-form-item>
               </el-col>
               <el-col :span="10">
@@ -349,6 +356,10 @@ const createOrUpdateUser = async () => {
   }
   emits('getNewData')
   handleClose(userFormRef.value)
+}
+
+const handleGetImageUrl = (imageUrl: string) => {
+  userForm.avatar = imageUrl
 }
 
 watch(

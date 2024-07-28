@@ -20,12 +20,11 @@ router.beforeEach((to, _, next) => {
     next()
   } else {
     if (!routeStore.isAddRoutes && userRoutes) {
-      const layout: RouteRecordRaw = routes.find(
-        (route) => route.name === 'layout'
-      ) as RouteRecordRaw
+      const layout: RouteRecordRaw = routes.find((route) => route.name === 'layout') as RouteRecordRaw
 
       // console.log('lay', layout)
       const userRouteList = formatUserRoutes(userRoutes as any)
+      // console.log(userRouteList)
 
       // layout?.children?.push(...userRouteList)
       layout?.children?.splice(1, layout?.children!.length, ...userRouteList)

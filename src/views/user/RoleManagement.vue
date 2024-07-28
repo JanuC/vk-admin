@@ -23,7 +23,7 @@
         <el-table height="100%" :data="tableData" @selection-change="handleSelectionChange" v-cLoading="loadingStore.isLoading && !roleDialogData.isShow">
           <!-- <el-table-column type="selection" width="55" :selectable="(row: RoleProps) => Boolean(!row.isDefault)" /> -->
           <!-- <el-table-column label="角色id" prop="id"></el-table-column> -->
-          <el-table-column label="序号" type="index" width="55" align="center" />
+          <el-table-column label="序号" type="index" :index="coumutedIndex" width="55" align="center" />
           <el-table-column label="角色名" prop="name"></el-table-column>
           <el-table-column label="预设角色" prop="isDefault" align="center">
             <template #default="{ row }">
@@ -83,6 +83,8 @@
             :page-sizes="[10, 20, 50, 100]"
             layout="total, sizes, prev, pager, next, jumper"
             :total="total"
+            @current-change="getTableData"
+            @size-change="getTableData"
           />
         </div>
       </template>
@@ -119,6 +121,12 @@ const getList = async () => {
   const { data } = await getRoleList({ ...queryForm.value })
 
   tableData.value = data
+}
+
+const coumutedIndex = (index: number) => {
+  const { pageSize, current } = queryForm.value
+
+  return (current - 1) * pageSize + index + 1
 }
 
 // 获取符合条件的数据长度
