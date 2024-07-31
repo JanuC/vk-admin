@@ -3,7 +3,7 @@
     <el-card shadow="never" class="mb-[0.4rem] !border-none">
       <el-space class="w-full flex justify-between">
         <el-space>
-          <el-button type="primary" @click="handleCreate">新建博客</el-button>
+          <el-button type="primary" @click="handleCreate" v-permission="['BLOG_CREATE']">新建博客</el-button>
         </el-space>
         <el-form inline class="h-[3.2rem]" :model="queryForm" ref="queryFormRef">
           <el-form-item label="博客名:" prop="title">
@@ -79,12 +79,12 @@
           </el-table-column>
           <el-table-column label="操作" align="center" fixed="right" min-width="220">
             <template #default="{ row }">
-              <el-button link type="primary" @click="handleEdit(row.id)">编辑</el-button>
+              <el-button link type="primary" v-permission="['BLOG_EDIT']" @click="handleEdit(row.id)">编辑</el-button>
               <el-button link @click="handlePreview(row.id)">预览</el-button>
-              <el-button link type="success" @click="handleDownload(row.ossFileName, row.title)">下载</el-button>
+              <el-button link type="success" @click="handleDownload(row.ossFileName, row.title)" v-permission="['BLOG_DOWNLOAD']">下载</el-button>
               <el-popconfirm title="删除博客后将不可恢复, 确定删除吗?" width="20rem" @confirm="handleDelete(row.id)" @cancel="messageInfo('已取消操作')">
                 <template #reference>
-                  <el-button link type="danger">删除</el-button>
+                  <el-button link type="danger" v-permission="['BLOG_DELETE']">删除</el-button>
                 </template>
               </el-popconfirm>
             </template>

@@ -4,6 +4,7 @@ interface RouteDataProps {
   component: string
   title: string
   icon: string
+  name: string
   parent?: RouteDataProps
   children?: RouteDataProps[]
   name: string
@@ -32,6 +33,7 @@ interface RouteFormProps {
   path: string
   component: string
   title: string
+  name: string
   icon?: string
   parentId?: string
   roleIds: string[]

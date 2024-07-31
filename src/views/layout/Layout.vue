@@ -10,7 +10,11 @@
           <Header />
         </el-header>
         <el-main>
-          <RouterView />
+          <router-view v-slot="{ Component }">
+            <keep-alive :include="['NewBlog']">
+              <component :is="Component" />
+            </keep-alive>
+          </router-view>
         </el-main>
         <el-footer class="!h-[4rem] border-t-[0.01rem] flex items-center">Footer</el-footer>
       </el-container>

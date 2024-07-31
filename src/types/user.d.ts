@@ -12,6 +12,7 @@ interface UserProps {
   roleIds: string[]
   roles?: RoleProps[]
   routes?: RouteProps[]
+  permissions?: string[]
   avatar: string
   createTime: Date
   updateTime: Date

@@ -45,7 +45,7 @@
       <el-form-item prop="title">
         <template #label>
           <el-tooltip content="路由名称，对应title值">
-            <div class="flex items-center cursor-pointer">路由名称<i-ep-infoFilled />:</div>
+            <div class="flex items-center cursor-pointer">路由标题<i-ep-infoFilled />:</div>
           </el-tooltip>
         </template>
         <el-input placeholder="请输入路由名" v-model="routeForm.title" clearable></el-input>
@@ -63,6 +63,14 @@
           <el-radio :value="1">是</el-radio>
           <el-radio :value="0">否</el-radio>
         </el-radio-group>
+      </el-form-item>
+      <el-form-item label="路由名:" prop="name">
+        <template #label>
+          <el-tooltip content="路由name值，唯一">
+            <div class="flex items-center cursor-pointer">路由名称<i-ep-infoFilled />:</div>
+          </el-tooltip>
+        </template>
+        <el-input placeholder="请输入路由名" v-model="routeForm.name"></el-input>
       </el-form-item>
       <el-form-item prop="path">
         <template #label>
@@ -184,6 +192,7 @@ const routeForm = ref<RouteFormProps>({
   path: '',
   parentId: '',
   component: '',
+  name: '',
   icon: '',
   roleIds: [],
   title: '',
@@ -197,7 +206,7 @@ const routeFormRules = reactive<FormRules<RouteFormProps>>({
   title: [
     {
       required: true,
-      message: '路由名称不能为空',
+      message: '路由标题不能为空',
       trigger: ['change', 'blur'],
     },
     {
@@ -211,6 +220,13 @@ const routeFormRules = reactive<FormRules<RouteFormProps>>({
     {
       required: true,
       message: '路由访问路径不能为空',
+      trigger: ['change', 'blur'],
+    },
+  ],
+  name: [
+    {
+      required: true,
+      message: '请输入路由name值',
       trigger: ['change', 'blur'],
     },
   ],
@@ -351,12 +367,13 @@ const getTargetRoute = async (id: string) => {
   const { data } = await getRouteById(id)
 
   routeDetail.value = data
-  const { path, title, component, icon, parentId, isTopRoute, roleIds } = data
+  const { path, title, component, icon, parentId, isTopRoute, roleIds, name } = data
   routeForm.value = {
     path,
     title,
     component,
     icon,
+    name,
     isTopRoute,
     parentId: parentId ? parentId : '',
     roleIds,

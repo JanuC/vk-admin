@@ -56,7 +56,7 @@
       </el-row>
       <el-row justify="space-between">
         <el-col :span="10">
-          <el-form-item label="分配权限:">
+          <el-form-item label="分配权限:" prop="permIds">
             <tree
               :data="allPerms"
               :props="{ children: 'children', label: 'name' }"
@@ -69,7 +69,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="10">
-          <el-form-item label="分配路由:">
+          <el-form-item label="分配路由:" prop="routeIds">
             <tree
               :data="allRoutes"
               :props="{ children: 'children', label: 'title' }"
@@ -173,7 +173,8 @@ const createOrUpdateRole = async () => {
 
   if (id) {
     // 编辑操作
-    await updateRole(id, { ...roleForm.value })
+
+    await updateRole(id, { ...roleForm.value, permIds: roleForm.value.permIds.concat(permMenuIds.value), routeIds: roleForm.value.routeIds.concat(routeMenuIds.value) })
     noticeSuccess('更新角色成功')
     emits('updateData')
   } else {
@@ -201,16 +202,19 @@ const getAllRoutes = async () => {
 }
 
 // 获取选中的权限节点
+const permMenuIds = ref<string[]>([])
 const handleCheckPerms = (_: PermDataProps, checkedObject: CheckedObjProps<PermDataProps>) => {
-  const { checkedKeys } = checkedObject
+  const { checkedKeys, halfCheckedKeys } = checkedObject
+  permMenuIds.value = halfCheckedKeys
+
   roleForm.value.permIds = checkedKeys
 }
 
 // 获取选中的路由节点
+const routeMenuIds = ref<string[]>([])
 const handleCheckRoutes = (_: RouteDataProps, checkedObject: CheckedObjProps<RouteDataProps>) => {
-  console.log('checked', checkedObject)
-
-  const { checkedKeys } = checkedObject
+  const { checkedKeys, halfCheckedKeys } = checkedObject
+  routeMenuIds.value = halfCheckedKeys
   roleForm.value.routeIds = checkedKeys
 }
 

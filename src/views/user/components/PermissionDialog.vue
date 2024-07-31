@@ -19,16 +19,16 @@
     </el-descriptions>
     <el-form v-else ref="permFormRef" :model="permForm" label-width="auto" v-cLoading="loadingStore.isLoading && permissionDialogData.isShow" :rules="permFormRules">
       <el-form-item label="权限名:" prop="name">
-        <el-input v-model="permForm.name" placeholder="请输入权限名"></el-input>
+        <el-input v-model="permForm.name" clearable placeholder="请输入权限名"></el-input>
       </el-form-item>
       <el-form-item label="权限目录:" prop="isMenu">
-        <el-radio-group v-model="permForm.isMenu">
+        <el-radio-group v-model="permForm.isMenu" @change="handleChangeIsMenu">
           <el-radio :value="1">是</el-radio>
           <el-radio :value="0">否</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="父级目录:" prop="parentId">
-        <el-select v-model="permForm.parentId" placeholder="请选择权限目录">
+        <el-select v-model="permForm.parentId" clearable :disabled="Boolean(permForm.isMenu)" :placeholder="permForm.isMenu ? '权限目录没有父级目录' : '请选择权限目录'">
           <el-option v-for="item in permMenu" :key="item.id" :value="item.id" :label="item.name"></el-option>
         </el-select>
       </el-form-item>
@@ -40,10 +40,10 @@
             >
           </el-tooltip>
         </template>
-        <el-input v-model="permForm.enumVal" placeholder="请输入唯一枚举值"></el-input>
+        <el-input v-model="permForm.enumVal" clearable placeholder="请输入唯一枚举值"> </el-input>
       </el-form-item>
       <el-form-item label="描述:" prop="desc">
-        <el-input type="textarea" placeholder="请输入描述" v-model="permForm.desc" maxlength="100" show-word-limit :autosize="{ minRows: 4 }"></el-input>
+        <el-input type="textarea" clearable placeholder="请输入描述" v-model="permForm.desc" maxlength="100" show-word-limit :autosize="{ minRows: 4 }"></el-input>
       </el-form-item>
       <el-form-item label="分配角色:" prop="roleIds">
         <el-checkbox-group v-model="permForm.roleIds">
@@ -91,7 +91,7 @@ const permForm = ref<PermFormProps>({
   enumVal: '',
   parentId: '',
   desc: '',
-  isMenu: 0,
+  isMenu: 1,
   roleIds: [],
 })
 
@@ -164,11 +164,18 @@ const handleClose = (formEl: FormInstance | undefined) => {
   permissionDialogData.value.id = ''
   permissionDialogData.value.isShow = false
 }
+
 const handleConfirm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid) => {
     if (valid) createOrUpdatePerm()
   })
+}
+
+const handleChangeIsMenu = (value: 0 | 1) => {
+  if (value) {
+    permForm.value.parentId = ''
+  }
 }
 
 const getAllRoleList = async () => {
