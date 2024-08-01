@@ -176,6 +176,9 @@ const getBlogList = async () => {
   const { data } = await getBlogListByFilter({ title, status, startTime, endTime, current, pageSize })
 
   const { records, total: totalCount } = data
+
+  console.log('records', records)
+
   tableData.value = records
   total.value = totalCount
   loadingStore.setIsLoading(false)

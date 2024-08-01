@@ -46,3 +46,10 @@ export const updateBlogById = (id: string, data: newBlogProps) => {
     data,
   })
 }
+
+export const updateBlogCountById = (id: string) => {
+  return request({
+    method: 'PATCH',
+    url: `/blog/view/count/${id}`,
+  })
+}
