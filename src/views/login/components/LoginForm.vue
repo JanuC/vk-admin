@@ -105,11 +105,16 @@ const handleLogin = async () => {
   })
   if (code === 200) {
     const { accessToken, userInfo } = data
+
     // localStorage.setItem('accessToken', accessToken)
-    userInfo.permissions = getPermsFromRoles(userInfo.roles)
+    userInfo.permissions = getPermsFromRoles(userInfo.roles!)
+
+    const { username } = userInfo
+
+    localStorage.setItem(`${username}_access_token`, accessToken)
 
     user.setUserInfo(userInfo)
-    user.setToken(accessToken)
+    // user.setToken(accessToken)
     noticeSuccess(`欢迎回来, ${userInfo.nickName}`)
     router.push('/dashboard')
   }

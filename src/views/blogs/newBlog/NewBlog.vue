@@ -168,7 +168,6 @@ const getTargetBlog = async (id: string) => {
   const { data } = await getBlogById(id)
 
   const { title, tags, status, content, desc } = data
-  console.log('d', data)
 
   newBlogForm.value = { title, tags, status, content: content!, desc }
 }

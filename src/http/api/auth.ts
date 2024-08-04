@@ -16,7 +16,7 @@ export const getCaptcha = () => {
   })
 }
 
-export const login = (data: any): Promise<DataProp<any>> => {
+export const login = (data: any): Promise<ResponseProps<LoginDataProps>> => {
   return request({
     method: 'POST',
     url: '/auth/login',

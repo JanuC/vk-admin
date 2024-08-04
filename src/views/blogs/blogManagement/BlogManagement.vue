@@ -56,13 +56,14 @@
           >
             <template #default="{ row }">{{ row.desc ? row.desc : '-' }}</template>
           </el-table-column>
-          <el-table-column label="状态" width="120">
+          <el-table-column label="浏览量" prop="viewCount" width="120" align="center"></el-table-column>
+          <el-table-column label="状态" width="120" align="center">
             <template #default="{ row }">
               <el-tag :type="row.status ? 'success' : 'warning'">{{ row.status ? '已发布' : '草稿' }}</el-tag>
             </template>
           </el-table-column>
           <!-- <el-table-column label="权重" prop="order" width="140" align="center"></el-table-column> -->
-          <el-table-column label="创建者" prop="createBy">
+          <el-table-column label="创建者" prop="createBy" width="180" align="center">
             <template #default="{ row }">
               {{ row.createBy.username }}
             </template>
@@ -158,7 +159,6 @@ const coumutedIndex = (index: number) => {
 
 const handleFilter = () => {
   getBlogList()
-  console.log(queryForm.value)
 }
 
 const handleResetFilter = (formEl: FormInstance | undefined) => {
@@ -176,8 +176,6 @@ const getBlogList = async () => {
   const { data } = await getBlogListByFilter({ title, status, startTime, endTime, current, pageSize })
 
   const { records, total: totalCount } = data
-
-  console.log('records', records)
 
   tableData.value = records
   total.value = totalCount
@@ -197,7 +195,7 @@ const handlePreview = (id: string) => {
 }
 
 const handleDownload = async (fileName: string, title: string) => {
-  const data = await downloadBlog(fileName)
+  const data = await downloadBlog({ fileName, title })
 
   const blob = new Blob([data])
   const link = document.createElement('a')

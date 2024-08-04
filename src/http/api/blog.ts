@@ -16,11 +16,11 @@ export const getBlogListByFilter = (params: QueryBlogParamsProps): Promise<Respo
   })
 }
 
-export const downloadBlog = (fileName: string): Promise<BlobPart> => {
+export const downloadBlog = (params: Record<string, string>): Promise<BlobPart> => {
   return request({
     method: 'GET',
     url: '/blog/file/download',
-    params: { fileName },
+    params,
     responseType: 'blob',
   })
 }
@@ -47,9 +47,9 @@ export const updateBlogById = (id: string, data: newBlogProps) => {
   })
 }
 
-export const updateBlogCountById = (id: string) => {
-  return request({
-    method: 'PATCH',
-    url: `/blog/view/count/${id}`,
-  })
-}
+// export const updateBlogCountById = (id: string) => {
+//   return request({
+//     method: 'PATCH',
+//     url: `/blog/view/count/${id}`,
+//   })
+// }

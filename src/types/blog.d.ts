@@ -37,6 +37,7 @@ type BlogProps = {
   status: 0 | 1
   content?: string
   tags: TagProps[]
+  viewCount: number
   createTime: Date
   updateTime: Data
 }

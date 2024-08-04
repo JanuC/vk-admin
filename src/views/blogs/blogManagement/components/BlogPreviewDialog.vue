@@ -32,6 +32,7 @@
           <span>状态</span>
           <el-tag :type="blogDetail?.status ? 'success' : 'warning'">{{ blogDetail?.status ? '已发布' : '草稿' }}</el-tag>
         </el-space>
+        <p>浏览量: {{ blogDetail?.viewCount }}</p>
         <p>作者: {{ blogDetail?.createBy.username }}</p>
         <p>创建时间: {{ formatDate(blogDetail?.createTime!) }}</p>
       </div>
@@ -51,7 +52,7 @@
 </template>
 
 <script lang="ts" setup name="BlogPreview">
-import { getBlogById, updateBlogCountById } from '@/http/api/blog'
+import { getBlogById } from '@/http/api/blog'
 import { useStore } from '@/store'
 import { formatDate } from '@/utils/formatDate'
 import { ModelRef } from 'vue'
@@ -74,7 +75,6 @@ watch(
     if (newIsShow) {
       loadingStore.setIsLoading(true)
       const { data } = await getBlogById(newId as string)
-      await updateBlogCountById(newId as string)
       blogDetail.value = data
 
       loadingStore.setIsLoading(false)

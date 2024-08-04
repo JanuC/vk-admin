@@ -174,7 +174,7 @@ const createOrUpdateRole = async () => {
   if (id) {
     // 编辑操作
 
-    await updateRole(id, { ...roleForm.value, permIds: roleForm.value.permIds.concat(permMenuIds.value), routeIds: roleForm.value.routeIds.concat(routeMenuIds.value) })
+    await updateRole(id, { ...roleForm.value })
     noticeSuccess('更新角色成功')
     emits('updateData')
   } else {
@@ -202,19 +202,17 @@ const getAllRoutes = async () => {
 }
 
 // 获取选中的权限节点
-const permMenuIds = ref<string[]>([])
 const handleCheckPerms = (_: PermDataProps, checkedObject: CheckedObjProps<PermDataProps>) => {
-  const { checkedKeys, halfCheckedKeys } = checkedObject
-  permMenuIds.value = halfCheckedKeys
+  const { checkedKeys } = checkedObject
+  // permMenuIds.value = halfCheckedKeys
 
   roleForm.value.permIds = checkedKeys
 }
 
 // 获取选中的路由节点
-const routeMenuIds = ref<string[]>([])
 const handleCheckRoutes = (_: RouteDataProps, checkedObject: CheckedObjProps<RouteDataProps>) => {
-  const { checkedKeys, halfCheckedKeys } = checkedObject
-  routeMenuIds.value = halfCheckedKeys
+  const { checkedKeys } = checkedObject
+  // routeMenuIds.value = halfCheckedKeys
   roleForm.value.routeIds = checkedKeys
 }
 

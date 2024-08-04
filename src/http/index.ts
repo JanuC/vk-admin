@@ -69,7 +69,8 @@ request.interceptors.request.use(
     // showLoading()
 
     const { user } = useStore()
-    const accessToken = user.accessToken
+    const { userInfo } = user
+    const accessToken = localStorage.getItem(`${userInfo.username}_access_token`)
     if (accessToken) {
       req.headers['Authorization'] = `Bearer ${accessToken}`
     } else {
@@ -121,7 +122,10 @@ request.interceptors.response.use(
             const res = await refresh({ username })
             if (res) {
               const { accessToken } = res.data
-              user.setToken(accessToken)
+              const { user } = useStore()
+              const { userInfo } = user
+              // user.setToken(accessToken)
+              localStorage.setItem(`${userInfo.username}_access_token`, accessToken)
               // 设置token在config中
               config.headers['Authorization'] = `Bearer ${accessToken}`
 
@@ -154,9 +158,6 @@ request.interceptors.response.use(
         }
       }
     } else {
-      // await computedTime(Date.now())
-      console.log(123)
-
       noticeError(message)
       return Promise.reject(err)
     }

@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="not-found w-full h-full flex flex-col items-center justify-center"
-  >
+  <div class="not-found w-full h-full flex flex-col items-center justify-center">
     <img class="block" src="@/assets/404.svg" alt="404" />
     <p class="my-10 font-bold text-2xl">抱歉...您访问的网页不存在！</p>
     <p class="text-gray-500 text-sm">

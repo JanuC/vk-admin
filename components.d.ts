@@ -88,5 +88,7 @@ declare module 'vue' {
     UploadImage: typeof import('./src/components/upload/UploadImage.vue')['default']
     UserDialog: typeof import('./src/views/user/components/UserDialog.vue')['default']
     UserInfo: typeof import('./src/components/header/components/UserInfo.vue')['default']
+    UserOperatioLogDetail: typeof import('./src/views/system/userOperationLogs/components/UserOperatioLogDetail.vue')['default']
+    UserOperationLogDetail: typeof import('./src/views/system/userOperationLogs/components/UserOperationLogDetail.vue')['default']
   }
 }
