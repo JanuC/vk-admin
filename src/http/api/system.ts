@@ -14,3 +14,11 @@ export const getOperationLogById = (id: string): Promise<ResponseProps<Operation
     url: `/user-logger/${id}`,
   })
 }
+
+export const getOperationLogListByUsername = (params: QueryOperationLogListByUserProps): Promise<ResponseProps<FilterListProps>> => {
+  return request({
+    method: 'GET',
+    url: '/user-logger/list/user',
+    params,
+  })
+}

@@ -41,7 +41,7 @@
     </el-card>
     <el-card shadow="never" class="flex-1 !border-none flex flex-col" body-class=" flex-1  min-h-0">
       <template #default>
-        <el-table height="100%" :data="tableData" v-cLoading="loadingStore.isLoading">
+        <el-table height="100%" :data="tableData" v-cLoading="loadingStore.isLoading && !userOperationLogDetailData.isShow">
           <!-- <el-table-column type="selection" width="55" :selectable="(row: UserProps) => Boolean(!row.isDefault)" /> -->
           <el-table-column label="序号" type="index" width="55" align="center" />
           <el-table-column label="操作模块" prop="moduleName"></el-table-column>

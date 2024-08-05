@@ -3,7 +3,7 @@
     <template #header>
       <Title title="操作日志详情" />
     </template>
-    <div class="w-full max-h-[80vh] flex flex-col overflow-y-scroll overflow-x-hidden">
+    <div class="w-full max-h-[80vh] flex flex-col overflow-y-scroll overflow-x-hidden" v-cLoading="loadingStore.isLoading">
       <div class="w-full flex justify-between my-[0.8rem]">
         <div class="flex-1 max-w-[45%]">
           <span class="inline-block w-[8rem] font-medium">操作模块:</span>
@@ -88,6 +88,9 @@ import { ModelRef } from 'vue'
 import { MdPreview } from 'md-editor-v3'
 import 'md-editor-v3/lib/preview.css'
 import { formatDate } from '@/utils/formatDate'
+import { useStore } from '@/store'
+
+const { loadingStore } = useStore()
 
 const userOperationLogDetailData = defineModel('userOperationLogDetailData') as ModelRef<DetailDialogProps>
 
@@ -98,9 +101,11 @@ const computedCode = computed(() => (str?: string) => {
 })
 
 const getUserLoggerDetail = async (id: string) => {
+  loadingStore.setIsLoading(true)
   const { data } = await getOperationLogById(id)
 
   operationdetail.value = data
+  loadingStore.setIsLoading(false)
 }
 
 watch(

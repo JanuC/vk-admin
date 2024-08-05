@@ -57,11 +57,15 @@ declare module 'vue' {
     ElSkeleton: typeof import('element-plus/es')['ElSkeleton']
     ElSkeletonItem: typeof import('element-plus/es')['ElSkeletonItem']
     ElSpace: typeof import('element-plus/es')['ElSpace']
+    ElStep: typeof import('element-plus/es')['ElStep']
+    ElSteps: typeof import('element-plus/es')['ElSteps']
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     ElTag: typeof import('element-plus/es')['ElTag']
     ElText: typeof import('element-plus/es')['ElText']
+    ElTimeline: typeof import('element-plus/es')['ElTimeline']
+    ElTimelineItem: typeof import('element-plus/es')['ElTimelineItem']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElTree: typeof import('element-plus/es')['ElTree']
     ElUpload: typeof import('element-plus/es')['ElUpload']
@@ -88,7 +92,12 @@ declare module 'vue' {
     UploadImage: typeof import('./src/components/upload/UploadImage.vue')['default']
     UserDialog: typeof import('./src/views/user/components/UserDialog.vue')['default']
     UserInfo: typeof import('./src/components/header/components/UserInfo.vue')['default']
+    UserInfoCard: typeof import('./src/views/dashboard/components/UserInfoCard.vue')['default']
     UserOperatioLogDetail: typeof import('./src/views/system/userOperationLogs/components/UserOperatioLogDetail.vue')['default']
+    UserOperationList: typeof import('./src/views/dashboard/components/UserOperationList.vue')['default']
     UserOperationLogDetail: typeof import('./src/views/system/userOperationLogs/components/UserOperationLogDetail.vue')['default']
+  }
+  export interface ComponentCustomProperties {
+    vInfiniteScroll: typeof import('element-plus/es')['ElInfiniteScroll']
   }
 }

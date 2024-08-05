@@ -23,9 +23,11 @@ module.exports = {
       colors: {
         'login-bg': 'rgba(0, 0, 0, 0.3)',
         primary: '#ff0000',
+        success: '#45b207',
+        danger: '#f56c6c',
       },
       fontSize: {
-        sm: ['1.2rem', { lineHeight: '1.4rem' }],
+        xs: ['1.2rem', { lineHeight: '1.4rem' }],
         sm: ['1.4rem', { lineHeight: '1.6rem' }],
         base: ['1.6rem', { lineHeight: '2rem' }],
         xl: ['1.8rem', { lineHeight: '2.4rem' }],

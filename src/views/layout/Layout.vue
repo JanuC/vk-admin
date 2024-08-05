@@ -16,7 +16,10 @@
             </keep-alive>
           </router-view>
         </el-main>
-        <el-footer class="!h-[4rem] border-t-[0.01rem] flex items-center">Footer</el-footer>
+        <el-footer class="!h-[4rem] border-t-[0.01rem] flex justify-between items-center">
+          <p class="flex-1">通知：</p>
+          <el-link class="text-xs font-medium" href="https://github.com/JanuC/vk-admin" target="_blank">Design By Janu</el-link>
+        </el-footer>
       </el-container>
     </el-container>
   </div>

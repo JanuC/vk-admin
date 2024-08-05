@@ -40,3 +40,9 @@ type DetailDialogProps = {
   isShow: boolean
   id: string
 }
+
+type QueryOperationLogListByUserProps = {
+  current: number
+  pageSize: number
+  username: string
+}
