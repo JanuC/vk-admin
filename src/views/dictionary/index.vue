@@ -57,8 +57,6 @@ const id = 'preview-only'
 
 const previewRef = ref<HTMLElement>()
 
-let scrollElement = ref<HTMLElement | null>(null)
-
 const isLoading = ref<boolean>(false)
 
 onMounted(async () => {

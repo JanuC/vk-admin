@@ -57,8 +57,6 @@ declare module 'vue' {
     ElSkeleton: typeof import('element-plus/es')['ElSkeleton']
     ElSkeletonItem: typeof import('element-plus/es')['ElSkeletonItem']
     ElSpace: typeof import('element-plus/es')['ElSpace']
-    ElStep: typeof import('element-plus/es')['ElStep']
-    ElSteps: typeof import('element-plus/es')['ElSteps']
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
@@ -93,7 +91,6 @@ declare module 'vue' {
     UserDialog: typeof import('./src/views/user/components/UserDialog.vue')['default']
     UserInfo: typeof import('./src/components/header/components/UserInfo.vue')['default']
     UserInfoCard: typeof import('./src/views/dashboard/components/UserInfoCard.vue')['default']
-    UserOperatioLogDetail: typeof import('./src/views/system/userOperationLogs/components/UserOperatioLogDetail.vue')['default']
     UserOperationList: typeof import('./src/views/dashboard/components/UserOperationList.vue')['default']
     UserOperationLogDetail: typeof import('./src/views/system/userOperationLogs/components/UserOperationLogDetail.vue')['default']
   }
