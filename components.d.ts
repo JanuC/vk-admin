@@ -7,10 +7,13 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    BlogDateCount: typeof import('./src/views/dashboard/components/echarts/BlogDateCount.vue')['default']
+    BlogDateCountEchart: typeof import('./src/views/dashboard/components/echarts/BlogDateCountEchart.vue')['default']
     BlogPreviewDialog: typeof import('./src/views/blogs/blogManagement/components/BlogPreviewDialog.vue')['default']
     BlogTagDialog: typeof import('./src/views/blogs/newBlog/components/BlogTagDialog.vue')['default']
     Breadcrumb: typeof import('./src/components/breadcrumb/Breadcrumb.vue')['default']
     CustomLoading: typeof import('./src/components/loading/CustomLoading.vue')['default']
+    Echart: typeof import('./src/components/echart/Echart.vue')['default']
     Editor: typeof import('./src/components/editor/Editor.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']

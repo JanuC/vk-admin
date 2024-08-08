@@ -55,3 +55,8 @@ type BlogPreviewDialogProps = {
   isShow: boolean
   id: string
 }
+
+type BlogDateCountProps = {
+  date: string
+  count: number
+}

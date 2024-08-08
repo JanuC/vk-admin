@@ -53,3 +53,10 @@ export const updateBlogById = (id: string, data: newBlogProps) => {
 //     url: `/blog/view/count/${id}`,
 //   })
 // }
+
+export const getBlogDateCount = (): Promise<ResponseProps<BlogDateCountProps[]>> => {
+  return request({
+    method: 'GET',
+    url: '/blog/list/date-count',
+  })
+}
