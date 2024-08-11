@@ -54,9 +54,10 @@ export const updateBlogById = (id: string, data: newBlogProps) => {
 //   })
 // }
 
-export const getBlogDateCount = (): Promise<ResponseProps<BlogDateCountProps[]>> => {
+export const getBlogDateCount = (params: { days: string }): Promise<ResponseProps<BlogDateCountProps[]>> => {
   return request({
     method: 'GET',
     url: '/blog/list/date-count',
+    params,
   })
 }

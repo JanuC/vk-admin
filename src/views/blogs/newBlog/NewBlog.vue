@@ -185,9 +185,12 @@ const getData = () => {
   loadingStore.setIsLoading(false)
 }
 
-onMounted(() => {
-  getData()
-})
+watch(
+  () => route.query.id,
+  (newId) => {
+    if (newId) getData()
+  }
+)
 </script>
 
 <style lang="scss" scoped></style>

@@ -4,16 +4,23 @@
       <div class="w-full mb-[2rem]">
         <UserInfoCard />
       </div>
-      <div class="flex-1 min-h-0 overflow-y-scroll">
+      <el-card class="flex-1" body-class="w-full h-full  overflow-y-scroll">
         <!-- <p>用户访问情况、用户访问定位、日志发布情况、系统运行监测、系统用户情况、</p> -->
+        <!-- 用户访问信息 -->
+        <div class="w-full h-full">
+          <UserAccessEchart />
+        </div>
+        <el-divider></el-divider>
         <!-- 博客相关信息 -->
         <div class="w-full h-[40rem] flex">
-          <div class="date-count flex-1">
+          <div class="flex-1">
             <BlogDateCountEchart />
           </div>
-          <div class="other flex-1"></div>
+          <div class="flex-1 ml-[1rem]">
+            <!-- <UserAccessEchart /> -->
+          </div>
         </div>
-      </div>
+      </el-card>
     </div>
     <div class="w-[40rem]">
       <UserOperationList />
@@ -21,6 +28,8 @@
   </div>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import UserAccessEchart from './components/echarts/UserAccessEchart.vue'
+</script>
 
 <style lang="scss" scoped></style>
