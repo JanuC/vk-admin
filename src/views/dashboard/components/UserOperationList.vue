@@ -51,7 +51,6 @@ const loadMoreData = async () => {
   const { records, total: totalCount } = data
 
   total.value = totalCount
-  console.log('data', data)
   userOperationList.value = userOperationList.value.concat(records)
 }
 

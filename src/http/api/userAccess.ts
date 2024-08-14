@@ -9,3 +9,11 @@ export const getUserAccessListByFilter = (params: { startTime: string; endTime: 
     params,
   })
 }
+
+export const getUserAccessCountByDays = (params: QueryUserAccessCountProps): Promise<ResponseProps<UserAccessDateCountProps[]>> => {
+  return request({
+    method: 'GET',
+    url: '/user-access/list/days',
+    params,
+  })
+}

@@ -19,3 +19,12 @@ type UserAccessChatProps = Partial<UserAccessProps> & {
   }
   tooltip?: any
 }
+
+type QueryUserAccessCountProps = {
+  days: string
+}
+
+type UserAccessDateCountProps = {
+  date: string
+  count: number
+}

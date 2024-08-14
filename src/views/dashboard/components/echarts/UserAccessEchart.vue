@@ -146,7 +146,7 @@ const initOptions = async (data: UserAccessProps[]) => {
             const value = array.reduce((acc, curr) => {
               return acc + curr.visits
             }, 0)
-            return `${province}</br>总访问量: ${value}`
+            return `${province}</br>${params.marker}总访问量: ${value}`
           },
         },
         zoom: 1.1,
@@ -209,7 +209,7 @@ const initOptions = async (data: UserAccessProps[]) => {
           show: true,
           formatter: (params) => {
             const data = params.data as UserAccessChatProps
-            return `IP: ${data.ip}</br>IP定位: ${data.province + '-' + data.city}</br>访问次数: ${data.visits}</br>上次访问: ${formatDate(data.lastVisitTime!)}`
+            return `IP: ${data.ip}</br>IP定位: ${data.province + '-' + data.city}</br>${params.marker} 访问次数: ${data.visits}</br>上次访问: ${formatDate(data.lastVisitTime!)}`
           },
         },
         data: data

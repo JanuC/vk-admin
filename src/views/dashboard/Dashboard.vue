@@ -10,14 +10,27 @@
         <div class="w-full h-full">
           <UserAccessEchart />
         </div>
-        <el-divider></el-divider>
-        <!-- 博客相关信息 -->
+        <el-divider />
         <div class="w-full h-[40rem] flex">
           <div class="flex-1">
+            <!-- 博客发布相关信息 -->
             <BlogDateCountEchart />
           </div>
-          <div class="flex-1 ml-[1rem]">
-            <!-- <UserAccessEchart /> -->
+          <div class="flex-1 ml-[2rem]">
+            <!-- 用户访问信息 -->
+            <UserAccessCountEchart />
+          </div>
+        </div>
+        <el-divider />
+        <!-- 服务器运行相关信息 -->
+        <div class="w-full h-[40rem] flex">
+          <div class="flex-1">
+            <!-- 服务器内存使用量信息 -->
+            <ServerMemUsedEchart />
+          </div>
+          <div class="flex-1 ml-[2rem]">
+            <!-- 用户访问信息 -->
+            <UserAccessCountEchart />
           </div>
         </div>
       </el-card>

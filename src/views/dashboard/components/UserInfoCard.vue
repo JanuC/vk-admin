@@ -56,8 +56,6 @@ const { user } = useStore()
 
 const { userInfo } = user
 
-console.log(userInfo)
-
 const activeItem = ref<string>('1')
 </script>
 

@@ -12,8 +12,8 @@
   </div>
 </template>
 
-<script lang="ts" setup name="BlogDateCountEchart">
-import { getBlogDateCount } from '@/http/api/blog'
+<script lang="ts" setup>
+import { getUserAccessCountByDays } from '@/http/api/userAccess'
 import * as echarts from 'echarts'
 
 const selectVal = ref<string>('7')
@@ -23,7 +23,7 @@ const options = ref<echarts.EChartsOption>({})
 const initOptions = (data: BlogDateCountProps[]) => {
   const option: echarts.EChartsOption = {
     title: {
-      text: '用户博客发布情况',
+      text: '访客量情况',
       textStyle: {
         fontSize: 12,
       },
@@ -32,7 +32,7 @@ const initOptions = (data: BlogDateCountProps[]) => {
       show: true,
       trigger: 'axis',
       formatter: (params: any) => {
-        return `日期: ${params[0].axisValueLabel}</br>${params[0].marker}博客数: ${params[0].data}`
+        return `日期: ${params[0].axisValueLabel}</br>${params[0].marker}访客量: ${params[0].data}`
       },
     },
     xAxis: {
@@ -44,7 +44,7 @@ const initOptions = (data: BlogDateCountProps[]) => {
     yAxis: {
       show: true,
       type: 'value',
-      name: '博客数',
+      name: '访客量',
       minInterval: 1,
     },
     series: [
@@ -56,22 +56,22 @@ const initOptions = (data: BlogDateCountProps[]) => {
         symbol: 'circle',
         smooth: true,
         itemStyle: {
-          color: '#73DD39',
-          borderColor: '#73DD39',
+          color: '#9E87FF',
+          borderColor: '#9E87FF',
         },
         lineStyle: {
           // color: '#73DDC9',
           color: new echarts.graphic.LinearGradient(1, 1, 0, 0, [
             {
               offset: 0,
-              color: '#73DD39',
+              color: '#9effff',
             },
             {
               offset: 1,
-              color: '#73DDFF',
+              color: '#9E87FF',
             },
           ]),
-          shadowColor: 'rgba(115,221,255, 0.3)',
+          shadowColor: 'rgba(158,135,255, 0.3)',
           shadowBlur: 10,
           shadowOffsetY: 20,
         },
@@ -84,7 +84,8 @@ const initOptions = (data: BlogDateCountProps[]) => {
 }
 
 const getData = async () => {
-  const { data } = await getBlogDateCount({ days: selectVal.value })
+  const { data } = await getUserAccessCountByDays({ days: selectVal.value })
+
   initOptions(data)
 }
 

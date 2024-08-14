@@ -46,3 +46,7 @@ type QueryOperationLogListByUserProps = {
   pageSize: number
   username: string
 }
+
+type QueryMemUsedParamsProps = {
+  time: string
+}

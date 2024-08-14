@@ -22,3 +22,11 @@ export const getOperationLogListByUsername = (params: QueryOperationLogListByUse
     params,
   })
 }
+
+export const getServerMemUsedInfo = (params: QueryMemUsedParamsProps) => {
+  return request({
+    method: 'GET',
+    url: '/system/mem-used',
+    params,
+  })
+}
