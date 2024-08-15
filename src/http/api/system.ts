@@ -30,3 +30,27 @@ export const getServerMemUsedInfo = (params: QueryMemUsedParamsProps) => {
     params,
   })
 }
+
+export const getServerCpuUsageInfo = (params: QueryMemUsedParamsProps) => {
+  return request({
+    method: 'GET',
+    url: '/system/cpu-usage',
+    params,
+  })
+}
+
+export const getServerPublicBandwidthInfo = (params: QueryMemUsedParamsProps) => {
+  return request({
+    method: 'GET',
+    url: '/system/public-bandwidth',
+    params,
+  })
+}
+
+export const getServerInsideBandwidthInfo = (params: QueryMemUsedParamsProps) => {
+  return request({
+    method: 'GET',
+    url: '/system/inside-bandwidth',
+    params,
+  })
+}

@@ -50,11 +50,10 @@ const initOptions = (data: BlogDateCountProps[]) => {
     series: [
       {
         type: 'line',
-        // smooth: true,
         data: data.map((item) => item.count),
         symbolSize: 1,
         symbol: 'circle',
-        smooth: true,
+        // smooth: true,
         itemStyle: {
           color: '#9E87FF',
           borderColor: '#9E87FF',

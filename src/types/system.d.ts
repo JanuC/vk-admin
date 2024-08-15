@@ -50,3 +50,13 @@ type QueryOperationLogListByUserProps = {
 type QueryMemUsedParamsProps = {
   time: string
 }
+
+type ServerPublicBandwidthProps = {
+  enterRecords: ServerInfoRecordProps[]
+  outerRecords: ServerInfoRecordProps[]
+}
+
+type ServerInfoRecordProps = {
+  date: string
+  count: number
+}

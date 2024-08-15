@@ -29,8 +29,18 @@
             <ServerMemUsedEchart />
           </div>
           <div class="flex-1 ml-[2rem]">
-            <!-- 用户访问信息 -->
-            <UserAccessCountEchart />
+            <!-- CPU利用率 -->
+            <ServerCpuUsageEchart />
+          </div>
+        </div>
+        <div class="w-full h-[40rem] flex">
+          <div class="flex-1">
+            <!-- 公网带宽 -->
+            <ServerPublicBandwidthEchart />
+          </div>
+          <div class="flex-1 ml-[2rem]">
+            <!-- CPU利用率 -->
+            <ServerInsideBandwidthEchart />
           </div>
         </div>
       </el-card>
